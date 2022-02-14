@@ -10,30 +10,7 @@
   <script type="text/javascript" src="script.js" defer></script>
 </head>
 <body>
-	<div class="left-div">
-		<div class="card">
-			<img src="imgs/template_avatar.png" alt="Avatar">
-			<div class="container">
-				<h4><b>Herman Woodrow</b></h4>
-				<p>Baron of War</p>
-			</div>
-		</div>
-		<div class="card">
-			<img src="imgs/template_avatar.png" alt="Avatar">
-			<div class="container">
-				<h4><b>Sabina Peters</b></h4>
-				<p>Exarch of Energy</p>
-			</div>
-		</div>
-		<div class="card">
-			<img src="imgs/template_avatar.png" alt="Avatar">
-			<div class="container">
-				<h4><b>Messiah Blaine</b></h4>
-				<p>Cardinal of Darkness</p>
-			</div>
-		</div>
-	</div>
-	<div class="right-div">
+	<div class="top-div">
 		<h1>Rock Paper Scissors!</h1>
 
 		<!-- col 80 is where you switch to a new line for readability -->
@@ -42,13 +19,24 @@
 			with rock paper scissors! Contestants will face a random opponent each time,
 			the first to reach a score of 5 survives and moves on to face the next! This
 			goes on until one is left standing and is hailed champion!
-			
+			<br><br>
 			The common rules apply, rock beats scissors and so on. Starting with a timer of
 			10 seconds, the timer decrementing by 1 each round. Contestants reserve the
 			right to surrender each round at the expense of their prize.
-
-			Without further ado, let the games begin!
+			<br><br>
+			Do you have what it takes to win?
 		</p>
+	</div>
+	<div class="bottom-div">
+		<div class="card">
+			<img src="imgs/template_avatar.png" alt="Avatar">
+			<div class="container">
+				<label for="name" id="name-label">Name: </label>
+				<input type="text" id="name" placeholder="Numbers_00">
+				<label for="epithet" id="epithet-label">Epithet: </label>
+				<input type="text" id="epithet" placeholder="Elder of Fire">
+			</div>
+		</div>
 	</div>
 </body>
 </html>
