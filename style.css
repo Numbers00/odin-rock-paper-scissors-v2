@@ -3,24 +3,43 @@ body {
 }
 
 .intro-div, .input-div {
-  position: absolute;
   left: 50%;
 }
 
 .intro-div {
+  position: absolute;
   top: 50%;
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
 }
 
 .input-div {
+  position: absolute;
   top: 65%;
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .invisible {
   visibility: hidden;
+}
+
+.input-div h1 {
+  position: relative;
+  margin-bottom: 40px;
+}
+
+.avatar-cards {
+  width: 92vw;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 40px;
+  position: relative;
+  margin-top: 0;
 }
 
 .avatar-card {
@@ -28,8 +47,6 @@ body {
   transition: 0.3s;
   width: 200px;
   border-radius: 5px;
-  display: block;
-  margin: auto;
 }
 
 .avatar-card:hover {

@@ -23,6 +23,7 @@ document.getElementById('user-input-container').addEventListener('keydown', e =>
 })
 
 const inputDiv = document.getElementsByClassName('input-div')[0];
+let avatarCards = document.getElementsByClassName('avatar-cards')[0];
 
 function addAvatarCards() {
   const avatarCard = document.createElement('div');
@@ -46,7 +47,15 @@ function addAvatarCards() {
   cardTextContainer.appendChild(para);
 
   avatarCard.appendChild(cardTextContainer);
-  inputDiv.appendChild(avatarCard);
+
+  if (avatarCards.childElementCount === 4) {
+    avatarCards = document.createElement('div');
+    avatarCards.classList.add('avatar-cards');
+
+    avatarCards.appendChild(avatarCard);
+
+    inputDiv.appendChild(avatarCards);
+  } else avatarCards.appendChild(avatarCard);
 }
 
 function startMatching() {
