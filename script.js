@@ -1,12 +1,23 @@
+let gamerNamer = require('gamer-namer');
+let epithetNamer = require('epithet');
+
+window.onload = () => {
+  console.log(gamerNamer.generateName(), epithetNamer.choose());
+  document.getElementById('name').placeholder = gamerNamer.generateName();
+  document.getElementById('epithet').placeholder = epithetNamer.choose();
+}
+
 let names = [];
 let epithets = [];
 
 document.getElementById('user-input-container').addEventListener('keydown', e => {
   if (e.keyCode === 13) {
-    names.push(document.getElementById('name').value);
-    epithets.push(document.getElementById('epithet').value);
+    if (document.getElementById('name').value === '') names.push(document.getElementById('name').placeholder);
+    else names.push(document.getElementById('name').value);
 
-    console.log(names[0], epithets[0]);
+    if (document.getElementById('epithet').value === '') epithets.push(document.getElementById('epithet').placeholder);
+    else epithets.push(document.getElementById('epithet').value);
+
     startMatching();
   }
 })
