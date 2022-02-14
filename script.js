@@ -23,7 +23,31 @@ document.getElementById('user-input-container').addEventListener('keydown', e =>
 })
 
 function startMatching() {
+  const avatarCard = document.createElement('div');
+  avatarCard.classList.add("avatar-card");
+  
+  const avatarImg = document.createElement('img');
+  avatarImg.src = 'imgs/template_avatar.png';
+  avatarImg.alt = 'Avatar';
+  avatarCard.appendChild(avatarImg);
 
+  const cardTextContainer = document.createElement('div');
+  cardTextContainer.classList.add('card-text-container');
+
+  const h4 = document.createElement('h4');
+  h4.textContent = gamerNamer.generateName();
+  h4.fontWeight = 700;
+  cardTextContainer.appendChild(h4);
+
+  const para = document.createElement('p');
+  para.textContent = epithetNamer.choose();
+  cardTextContainer.appendChild(para);
+
+  avatarCard.appendChild(cardTextContainer);
+
+  let inputDiv = document.getElementsByClassName('input-div')[0];
+
+  inputDiv.appendChild(avatarCard);
 }
 
 let selections = ['rock', 'paper', 'scissors'];

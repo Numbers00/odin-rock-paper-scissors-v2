@@ -23,7 +23,7 @@ body {
   visibility: hidden;
 }
 
-.card {
+.avatar-card {
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
   transition: 0.3s;
   width: 200px;
@@ -32,7 +32,7 @@ body {
   margin: auto;
 }
 
-.card:hover {
+.avatar-card:hover {
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
 
@@ -41,11 +41,11 @@ img {
   border-radius: 5px 5px 0 0;
 }
 
-.card .card-text-container {
+.avatar-card .card-text-container {
   padding: 4px 16px;
 }
 
-.card .card-text-container #name, .card .card-text-container #epithet {
+.avatar-card .avatar-card-text-container #name, .avatar-card .avatar-card-text-container #epithet {
   border: none;
   width: 60%;
 }
