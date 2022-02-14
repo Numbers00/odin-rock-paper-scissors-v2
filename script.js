@@ -22,10 +22,12 @@ document.getElementById('user-input-container').addEventListener('keydown', e =>
   }
 })
 
-function startMatching() {
+const inputDiv = document.getElementsByClassName('input-div')[0];
+
+function addAvatarCards() {
   const avatarCard = document.createElement('div');
   avatarCard.classList.add("avatar-card");
-  
+
   const avatarImg = document.createElement('img');
   avatarImg.src = 'imgs/template_avatar.png';
   avatarImg.alt = 'Avatar';
@@ -44,10 +46,13 @@ function startMatching() {
   cardTextContainer.appendChild(para);
 
   avatarCard.appendChild(cardTextContainer);
-
-  let inputDiv = document.getElementsByClassName('input-div')[0];
-
   inputDiv.appendChild(avatarCard);
+}
+
+function startMatching() {
+  for (let i = 0; i < 63; i++) {
+    addAvatarCards();
+  }
 }
 
 let selections = ['rock', 'paper', 'scissors'];
