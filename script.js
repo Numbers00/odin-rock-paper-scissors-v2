@@ -8,11 +8,17 @@ let lastScrollTop = 0;
 window.addEventListener("scroll", function(){ // or window.addEventListener("scroll"....
   var st = window.pageYOffset || document.documentElement.scrollTop; // Credits: "https://github.com/qeremy/so/blob/master/so.dom.js#L426"
   if (st > lastScrollTop) {
-    introDiv.style.visibility = 'hidden';
-    inputDiv.style.visibility = 'visible';
+    $('.intro-div').fadeOut(200);
+
+    setTimeout(function() {
+      $('.input-div').fadeIn(200).removeClass('invisible');
+    }, 200);
   } else {
-    inputDiv.style.visibility = 'hidden';
-    introDiv.style.visibility = 'visible';
+    $('.input-div').fadeOut(200);
+
+    setTimeout(function() {
+      $('.intro-div').fadeIn(200);
+    }, 200);
   }
   lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
 }, false);
