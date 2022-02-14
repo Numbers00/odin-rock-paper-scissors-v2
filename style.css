@@ -5,9 +5,18 @@ body {
 .intro-div, .input-div {
   position: absolute;
   left: 50%;
+}
+
+.intro-div {
   top: 50%;
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
+}
+
+.input-div {
+  top: 100%;
+  -webkit-transform: translate(-100%, -100%);
+  transform: translate(-100%, -100%);
 }
 
 .invisible {
@@ -30,11 +39,11 @@ img {
   border-radius: 5px 5px 0 0;
 }
 
-.card .container {
+.card .card-text-container {
   padding: 2px 12px;
 }
 
-.card .container #name, .card .container #epithet {
+.card .card-text-container #name, .card .card-text-container #epithet {
   border: none;
   width: 60%;
 }

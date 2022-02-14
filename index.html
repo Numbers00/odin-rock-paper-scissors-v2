@@ -7,6 +7,7 @@
   <title>Rock, Paper, Scissors!</title>
 
 	<link rel="stylesheet" href="style.css">
+	<script type="text/javascript" src="script.js" defer></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
@@ -30,20 +31,20 @@
 	<div class="input-div invisible">
 		<div class="card">
 			<img src="imgs/template_avatar.png" alt="Avatar">
-			<div class="container">
+			<div id="user-input-container" class="card-text-container">
 				<label for="name" id="name-label">Name: </label>
 				<input 
 					type="text" id="name" placeholder="Numbers_00" maxlength="16"
-					pattern="([^\s][A-z0-9À-ž]\s]+)"
+					pattern="([^\s][A-z0-9À-ž\s]+)"
 				>
 				<label for="epithet" id="epithet-label">Epithet: </label>
 				<input 
 					type="text" id="epithet" placeholder="Elder of Fire" maxlength="16"
-					pattern="([^\s][A-z0-9À-ž]\s]*)"
+					pattern="([^\s][A-z0-9À-ž\s]*)"
 				>
 			</div>
 		</div>
 	</div>
-	<script type="text/javascript" src="script.js"></script>
+	<script type="text/javascript" src="scroll-func.js"></script>
 </body>
 </html>
