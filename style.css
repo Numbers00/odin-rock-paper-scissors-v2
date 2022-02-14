@@ -14,9 +14,9 @@ body {
 }
 
 .input-div {
-  top: 100%;
-  -webkit-transform: translate(-100%, -100%);
-  transform: translate(-100%, -100%);
+  top: 65%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }
 
 .invisible {
@@ -28,6 +28,8 @@ body {
   transition: 0.3s;
   width: 200px;
   border-radius: 5px;
+  display: block;
+  margin: auto;
 }
 
 .card:hover {
@@ -40,7 +42,7 @@ img {
 }
 
 .card .card-text-container {
-  padding: 2px 12px;
+  padding: 4px 16px;
 }
 
 .card .card-text-container #name, .card .card-text-container #epithet {
