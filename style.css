@@ -1,16 +1,13 @@
-body {
-  display: flex;
+.intro-div, .input-div {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }
 
-.left-div {
-  flex: 2 1 0;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-}
-
-.right-div {
-  flex: 1 1 0;
+.input-div {
+  visibility: hidden;
 }
 
 .card {
@@ -29,6 +26,11 @@ img {
   border-radius: 5px 5px 0 0;
 }
 
-.card.container {
-  padding: 2px 16px;
+.card .container {
+  padding: 2px 12px;
+}
+
+.card .container #name, .card .container #epithet {
+  border: none;
+  width: 60%;
 }
