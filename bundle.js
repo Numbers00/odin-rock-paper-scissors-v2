@@ -1214,17 +1214,26 @@ window.addEventListener('keydown', (e) => {
   if (e.keyCode === 40) {
     $('.top-div').fadeOut(200);
 
-    setTimeout(function() {
+    setTimeout(() => {
       $('.bottom-div').fadeIn(200).removeClass('invisible');
     }, 200);
   } else if (e.keyCode === 38) {
     $('.bottom-div').fadeOut(200);
 
-    setTimeout(function() {
+    setTimeout(() => {
       $('.top-div').fadeIn(200);
     }, 200);
   }
 });
+
+function wait(ms) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      console.log("Done waiting");
+      resolve(ms)
+    }, ms )
+  })
+}
 
 let gamerNamer = require('gamer-namer');
 let epithetGiver = require('epithet');
@@ -1286,16 +1295,55 @@ function addAvatarCards(index) {
 }
 
 // adds up to a total of 64 avatar cards including the player
-function startMatching() {
+async function startMatching() {
   document.getElementsByClassName('avatar-card')[0].remove();
+
   addAvatarCards(0);
 
-  for (let i = 1; i < 64; i++) {
+  let randNum = Math.floor(Math.random() * 23) + 25;
+
+  for (let i = 1; i < randNum; i++) {
     names.push(gamerNamer.generateName());
     epithets.push(epithetGiver.choose());
 
+    if (names[i] === undefined) {
+      names.pop();
+      epithets.pop();
+      i--;
+      continue;
+    }
+
     addAvatarCards(i);
   }
+
+  document.getElementById('bottom-div-title').textContent = `Waiting for Other Players... (${names.length}/64)`;
+
+  for (let i = randNum; i < 64; i++) {
+    names.push(gamerNamer.generateName());
+    epithets.push(epithetGiver.choose());
+
+    if (names[i] === undefined) {
+      names.pop();
+      epithets.pop();
+      i--;
+      continue;
+    }
+    addAvatarCards(i);
+
+    if (Math.floor((Math.random() * 3) + 1) % 2 != 0) await wait(Math.random() * 400);
+
+    document.getElementById('bottom-div-title').textContent = `Waiting for Other Players... (${names.length}/64)`;
+  }
+
+  for (let i = 1; i <= 5; i++) {
+    await wait(800);
+    if (i % 2 != 0) {
+      document.getElementById('bottom-div-title').textContent = 'Starting Game...';
+    } else document.getElementById('bottom-div-title').textContent = 'Starting Game..';
+
+    if (i === 5) startGame();
+  }
 }
+
 
 },{"epithet":1,"gamer-namer":3}]},{},[4]);
