@@ -1210,34 +1210,49 @@ module.exports = {
 };
 
 },{"./data":2}],4:[function(require,module,exports){
+window.addEventListener('keydown', (e) => {
+  if (e.keyCode === 40) {
+    $('.top-div').fadeOut(200);
+
+    setTimeout(function() {
+      $('.bottom-div').fadeIn(200).removeClass('invisible');
+    }, 200);
+  } else if (e.keyCode === 38) {
+    $('.bottom-div').fadeOut(200);
+
+    setTimeout(function() {
+      $('.top-div').fadeIn(200);
+    }, 200);
+  }
+});
+
 let gamerNamer = require('gamer-namer');
-let epithetNamer = require('epithet');
+let epithetGiver = require('epithet');
 
 window.onload = () => {
-  console.log(gamerNamer.generateName(), epithetNamer.choose());
-  document.getElementById('name').placeholder = gamerNamer.generateName();
-  document.getElementById('epithet').placeholder = epithetNamer.choose();
+  document.getElementById('name').placeholder = 'Name: ' + gamerNamer.generateName();
+  document.getElementById('epithet').placeholder = 'Epithet: ' + epithetGiver.choose();
 }
 
 let names = [];
 let epithets = [];
 
-document.getElementById('user-input-container').addEventListener('keydown', e => {
+document.getElementById('input-container').addEventListener('keydown', e => {
   if (e.keyCode === 13) {
-    if (document.getElementById('name').value === '') names.push(document.getElementById('name').placeholder);
+    if (document.getElementById('name').value === '') names.push(document.getElementById('name').placeholder.replace('Name: ', ''));
     else names.push(document.getElementById('name').value);
 
-    if (document.getElementById('epithet').value === '') epithets.push(document.getElementById('epithet').placeholder);
+    if (document.getElementById('epithet').value === '') epithets.push(document.getElementById('epithet').placeholder.replace('Epithet: ', ''));
     else epithets.push(document.getElementById('epithet').value);
 
     startMatching();
   }
-})
+});
 
-const inputDiv = document.getElementsByClassName('input-div')[0];
+const bottomDiv = document.getElementsByClassName('bottom-div')[0];
 let avatarCards = document.getElementsByClassName('avatar-cards')[0];
 
-function addAvatarCards() {
+function addAvatarCards(index) {
   const avatarCard = document.createElement('div');
   avatarCard.classList.add("avatar-card");
 
@@ -1246,19 +1261,19 @@ function addAvatarCards() {
   avatarImg.alt = 'Avatar';
   avatarCard.appendChild(avatarImg);
 
-  const cardTextContainer = document.createElement('div');
-  cardTextContainer.classList.add('card-text-container');
+  const textContainer = document.createElement('div');
+  textContainer.classList.add('text-container');
 
   const h4 = document.createElement('h4');
-  h4.textContent = gamerNamer.generateName();
+  h4.textContent = names[index];
   h4.fontWeight = 700;
-  cardTextContainer.appendChild(h4);
+  textContainer.appendChild(h4);
 
   const para = document.createElement('p');
-  para.textContent = epithetNamer.choose();
-  cardTextContainer.appendChild(para);
+  para.textContent = epithets[index];
+  textContainer.appendChild(para);
 
-  avatarCard.appendChild(cardTextContainer);
+  avatarCard.appendChild(textContainer);
 
   if (avatarCards.childElementCount === 4) {
     avatarCards = document.createElement('div');
@@ -1266,63 +1281,21 @@ function addAvatarCards() {
 
     avatarCards.appendChild(avatarCard);
 
-    inputDiv.appendChild(avatarCards);
+    bottomDiv.appendChild(avatarCards);
   } else avatarCards.appendChild(avatarCard);
 }
 
+// adds up to a total of 64 avatar cards including the player
 function startMatching() {
-  for (let i = 0; i < 63; i++) {
-    addAvatarCards();
+  document.getElementsByClassName('avatar-card')[0].remove();
+  addAvatarCards(0);
+
+  for (let i = 1; i < 64; i++) {
+    names.push(gamerNamer.generateName());
+    epithets.push(epithetGiver.choose());
+
+    addAvatarCards(i);
   }
-}
-
-let selections = ['rock', 'paper', 'scissors'];
-
-let playerSelection = '';
-
-let playerScore = 0;
-let computerScore = 0;
-
-function startGame() {
-  
-}
-
-function playRound(playerSelection) {
-  let result = '';
-
-  let computerSelection = computerPlay();
-
-  switch (playerSelection) {
-    case 'rock':
-      computerSelection === 'rock' ? result = 'It\'s a Tie! You\'re both Rocks!' :
-          computerSelection === 'paper' ? result = 'You Lose! Paper beats Rock!' :
-              result = 'You Win! Rock beats Scissors!';
-      break;
-    case 'paper':
-      computerSelection === 'rock' ? result = 'You Win! Paper beats Rock!' :
-          computerSelection === 'paper' ? result = 'It\s a Tie! You\'re both Papers!' :
-              result = 'You Lose! Scissors beats Paper!';
-      break;
-    case 'scissors':
-      computerSelection === 'rock' ? result = 'You Lose! Rock beats Scissors!' :
-          computerSelection === 'paper' ? result = 'You Win! Scissors beats Paper!' :
-              result = 'It\'s a Tie! You\'re both Scissors!';
-      break;
-    default:
-      computerSelection === 'rock' ? result = 'It\'s a Tie! You\'re both Rocks!' :
-          computerSelection === 'paper' ? result = 'You Lose! Paper beats Rock!' :
-              result = 'You Win! Rock beats Scissors!';
-  }
-
-  return result;
-}
-
-function playerPlay() {
-  return selections[Math.floor(Math.random() * 3)]
-}
-
-function computerPlay() {
-  return selections[Math.floor(Math.random() * 3)]
 }
 
 },{"epithet":1,"gamer-namer":3}]},{},[4]);

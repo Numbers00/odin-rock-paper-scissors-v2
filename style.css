@@ -1,68 +1,52 @@
-body {
-  min-height: 120vh;
+* {
+  font-family: 'Roboto', sans-serif;
 }
 
-.intro-div, .input-div {
-  left: 50%;
-}
-
-.intro-div {
+.top-div {
   position: absolute;
+  left: 50%;
   top: 50%;
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
 }
 
-.input-div {
-  position: absolute;
-  top: 65%;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
+.bottom-div {
+  text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.invisible {
-  visibility: hidden;
-}
-
-.input-div h1 {
-  position: relative;
-  margin-bottom: 40px;
-}
-
 .avatar-cards {
-  width: 92vw;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
   gap: 40px;
-  position: relative;
-  margin-top: 0;
 }
 
 .avatar-card {
+  width: 200px;
+  margin-bottom: 40px;
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
   transition: 0.3s;
-  width: 200px;
-  border-radius: 5px;
 }
 
 .avatar-card:hover {
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
 }
 
-img {
+.avatar-card img {
   width: 200px;
-  border-radius: 5px 5px 0 0;
 }
 
-.avatar-card .card-text-container {
-  padding: 4px 16px;
+.text-container {
+  padding: 2px 16px;
 }
 
-.avatar-card .avatar-card-text-container #name, .avatar-card .avatar-card-text-container #epithet {
+.text-container input {
+  width: 100%;
   border: none;
-  width: 60%;
+}
+
+.invisible {
+  visibility: hidden;
 }

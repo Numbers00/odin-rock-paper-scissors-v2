@@ -4,13 +4,19 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rock, Paper, Scissors!</title>
+  <title>Rock Paper Scissors Gladiators</title>
 
-	<link rel="stylesheet" href="style.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="bundle.js" defer></script>
+
+  <link rel="stylesheet" href="style.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400&display=swap" rel="stylesheet">
 </head>
 <body>
-	<div class="intro-div">
+  <div class="top-div">
 		<h1>Rock Paper Scissors!</h1>
 
 		<!-- col 80 is where you switch to a new line for readability -->
@@ -27,29 +33,25 @@
 			Do you have what it takes to win?
 		</p>
 	</div>
-	<div class="input-div invisible">
-		<h1>Create your Avatar</h1>
 
-		<div class="avatar-cards">
-			<div class="avatar-card">
-				<img src="imgs/template_avatar.png" alt="Avatar">
-				<div id="user-input-container" class="card-text-container">
-					<label for="name" id="name-label">Name: </label>
-					<input 
-						type="text" id="name" placeholder="" maxlength="16"
-						pattern="([^\s][A-z0-9À-ž\s]*)"
-					>
-					<label for="epithet" id="epithet-label">Epithet: </label>
-					<input 
-						type="text" id="epithet" placeholder="" maxlength="16"
-						pattern="([^\s][A-z0-9À-ž\s]*)"
-					>
-				</div>
-			</div>
-		</div>
-		
-	</div>
-	<script type="text/javascript" src="scroll-func.js"></script>
-	<script type="text/javascript" src="bundle.js"></script>
+  <div class="bottom-div invisible">
+    <h1>Create your Avatar</h1>
+  
+    <div class="avatar-cards">
+      <div class="avatar-card">
+        <img src="imgs/template_avatar.png" alt="Avatar">
+        <div id="input-container" class="text-container">
+          <input 
+            type="text" id="name" placeholder="Name" maxlength="16"
+            pattern="([^\s][A-z0-9À-ž\s]*)"
+          >
+          <input 
+            type="text" id="epithet" placeholder="Epithet" maxlength="16"
+            pattern="([^\s][A-z0-9À-ž\s]*)"
+          >
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
