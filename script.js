@@ -1,18 +1,18 @@
-window.addEventListener('keydown', (e) => {
-  if (e.keyCode === 40) {
-    $('.top-div').fadeOut(200);
+// window.addEventListener('keydown', (e) => {
+//   if (e.keyCode === 40) {
+//     $('.top-div').fadeOut(200);
 
-    setTimeout(() => {
-      $('.bottom-div').fadeIn(200).removeClass('invisible');
-    }, 200);
-  } else if (e.keyCode === 38) {
-    $('.bottom-div').fadeOut(200);
+//     setTimeout(() => {
+//       $('.bottom-div').fadeIn(200).removeClass('invisible');
+//     }, 200);
+//   } else if (e.keyCode === 38) {
+//     $('.bottom-div').fadeOut(200);
 
-    setTimeout(() => {
-      $('.top-div').fadeIn(200);
-    }, 200);
-  }
-});
+//     setTimeout(() => {
+//       $('.top-div').fadeIn(200);
+//     }, 200);
+//   }
+// });
 
 // Credits: https://stackoverflow.com/a/53452241
 function wait(ms) {
@@ -47,8 +47,8 @@ document.getElementById('input-container').addEventListener('keydown', e => {
   }
 });
 
-const bottomDiv = document.getElementsByClassName('bottom-div')[0];
-let avatarCards = document.getElementsByClassName('avatar-cards')[0];
+const leftDiv = document.getElementsByClassName('left-div')[0];
+const avatarCards = document.getElementsByClassName('avatar-cards')[0];
 
 function addAvatarCards(index) {
   const avatarCard = document.createElement('div');
@@ -74,14 +74,7 @@ function addAvatarCards(index) {
 
   avatarCard.appendChild(textContainer);
 
-  if (avatarCards.childElementCount === 4) {
-    avatarCards = document.createElement('div');
-    avatarCards.classList.add('avatar-cards');
-
-    avatarCards.appendChild(avatarCard);
-
-    bottomDiv.appendChild(avatarCards);
-  } else avatarCards.appendChild(avatarCard);
+  avatarCards.appendChild(avatarCard);
 }
 
 // adds up to a total of 64 avatar cards including the player
@@ -125,7 +118,7 @@ async function startMatching() {
     addAvatarCards(i);
   }
 
-  document.getElementById('bottom-div-title').textContent = `Waiting for Other Players... (${names.length}/64)`;
+  document.getElementById('left-div-title').textContent = `Waiting for Other Players... (${names.length}/64)`;
 
   for (let i = randNum; i < 64; i++) {
     names.push(gamerNamer.generateName());
@@ -142,14 +135,14 @@ async function startMatching() {
     // at times, more than 1 new gladiators will join
     if (Math.floor((Math.random() * 3) + 1) % 2 != 0) await wait(Math.random() * 400);
 
-    document.getElementById('bottom-div-title').textContent = `Waiting for Other Players... (${names.length}/64)`;
+    document.getElementById('left-div-title').textContent = `Waiting for Other Players... (${names.length}/64)`;
   }
 
   for (let i = 1; i <= 5; i++) {
     await wait(800);
     if (i % 2 != 0) {
-      document.getElementById('bottom-div-title').textContent = 'Starting Game...';
-    } else document.getElementById('bottom-div-title').textContent = 'Starting Game..';
+      document.getElementById('left-div-title').textContent = 'Starting Game...';
+    } else document.getElementById('left-div-title').textContent = 'Starting Game..';
 
     //if (i === 5) startGame();
   }
