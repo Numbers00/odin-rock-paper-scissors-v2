@@ -1,20 +1,23 @@
-/* * {
-  font-family: 'Roboto', sans-serif;
-} */
-
-.top-div {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
+body {
+  height: 96vh;
+  padding: 0 3%;
+  display: flex;
+  justify-content: space-between;
+  gap: 4%;
 }
 
-.bottom-div {
-  text-align: center;
+.left-div {
+  width: 60%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  flex-grow: 2;
+}
+
+.right-div {
+  width: 30%;
+  align-self: center;
+  flex-grow: 1;
 }
 
 .avatar-cards {
