@@ -147,7 +147,45 @@ async function startMatching() {
       document.getElementById('left-div-title').textContent = 'Starting Game...';
     } else document.getElementById('left-div-title').textContent = 'Starting Game..';
 
-    //if (i === 5) startGame();
+    if (i === 5) startGame();
   }
+}
+
+function setupGameLayout() {
+  const avatarCard = document.createElement('div');
+  avatarCard.classList.add("avatar-card");
+
+  const avatarImg = document.createElement('img');
+  avatarImg.src = images[index];
+  avatarImg.alt = 'Avatar';
+  avatarCard.appendChild(avatarImg);
+
+  const textContainer = document.createElement('div');
+  textContainer.classList.add('text-container');
+
+  const h4 = document.createElement('h4');
+  h4.style.margin = 2;
+  h4.textContent = names[index];
+  textContainer.appendChild(h4);
+
+  const para = document.createElement('p');
+  para.style.margin = 2;
+  para.textContent = epithets[index];
+  textContainer.appendChild(para);
+
+  avatarCard.appendChild(textContainer);
+}
+
+function setupGame() {
+  const leftDiv = document.getElementsByClassName('left-div')[0];
+
+  const roundDiv = document.getElementsByClassName('round-div')[0];
+  
+}
+
+function startGame() {
+  $('.avatar-cards').fadeOut(200).remove();
+
+
 }
 

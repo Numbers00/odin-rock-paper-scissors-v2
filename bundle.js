@@ -1359,8 +1359,14 @@ async function startMatching() {
       document.getElementById('left-div-title').textContent = 'Starting Game...';
     } else document.getElementById('left-div-title').textContent = 'Starting Game..';
 
-    //if (i === 5) startGame();
+    if (i === 5) startGame();
   }
+}
+
+function startGame() {
+  $('.avatar-cards').fadeOut(200);
+
+  
 }
 
 
