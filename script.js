@@ -31,8 +31,8 @@ let epithets = [];
 let images = [];
 
 window.onload = () => {
-  document.getElementById('name').placeholder = 'Name: ' + gamerNamer.generateName();
-  document.getElementById('epithet').placeholder = 'Epithet: ' + epithetGiver.choose();
+  document.getElementById('name').placeholder = 'Name: ' + gamerNamer.generateName().match(/[A-Z][a-z]+/g).join(' ');
+  document.getElementById('epithet').placeholder = 'Epithet: ' + epithetGiver.choose().split('-').map(elem => capitalizeFirstLetter(elem)).join(' ');
 }
 
 document.getElementById('input-container').addEventListener('keydown', e => {
@@ -77,10 +77,13 @@ function addAvatarCards(index) {
   avatarCards.appendChild(avatarCard);
 }
 
+// Credits: https://stackoverflow.com/a/1026087
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 // adds up to a total of 64 avatar cards including the player
 async function startMatching() {
-  document.getElementsByClassName('avatar-card')[0].remove();
-
   let picsumImages = [];
 
   // Credits: https://stackoverflow.com/a/12460434
@@ -90,7 +93,12 @@ async function startMatching() {
     }
   });
 
-  for (let i = 0, j = 0; i < 64; i++) {
+  const imageURL = document.getElementById('image').value;
+
+  if (imageURL !== '' && imageURL !== null) images.push(imageURL);
+  else images.push('imgs/template_avatar.png');
+
+  for (let i = 1, j = 0; i < 64; i++) {
     if (j <= 29) {
       if (Math.floor(Math.random() * 3) !== 0) {
         images.push(picsumImages[j]);
@@ -99,14 +107,16 @@ async function startMatching() {
     } else images.push('imgs/template_avatar.png');
   }
 
+  document.getElementsByClassName('avatar-card')[0].remove();
+
   addAvatarCards(0);
 
   // # of joined contestants in the matching phase will start at this number
   let randNum = Math.floor(Math.random() * 23) + 25;
 
   for (let i = 1; i < randNum; i++) {
-    names.push(gamerNamer.generateName());
-    epithets.push(epithetGiver.choose());
+    names.push(gamerNamer.generateName().match(/[A-Z][a-z]+/g).join(' '));
+    epithets.push(epithetGiver.choose().split('-').map(elem => capitalizeFirstLetter(elem)).join(' '));
 
     if (names[i] === undefined) {
       names.pop();
@@ -121,8 +131,8 @@ async function startMatching() {
   document.getElementById('left-div-title').textContent = `Waiting for Other Players... (${names.length}/64)`;
 
   for (let i = randNum; i < 64; i++) {
-    names.push(gamerNamer.generateName());
-    epithets.push(epithetGiver.choose());
+    names.push(gamerNamer.generateName().match(/[A-Z][a-z]+/g).join(' '));
+    epithets.push(epithetGiver.choose().split('-').map(elem => capitalizeFirstLetter(elem)).join(' '));
 
     if (names[i] === undefined) {
       names.pop();
