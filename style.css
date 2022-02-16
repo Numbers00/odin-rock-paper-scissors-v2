@@ -36,10 +36,12 @@
 
 .avatar-card img {
   width: 200px;
+  height: 200px;
 }
 
 .text-container {
   padding: 2px 16px;
+  text-align: left;
 }
 
 .text-container input {
