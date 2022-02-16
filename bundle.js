@@ -1306,8 +1306,8 @@ async function startMatching() {
     dataType: 'json',
     success: (data) => {
       for (elem in data.results) {
-        images.push(data.results[elem].picture.medium);
-        console.log(data.results[elem].picture.medium);
+        images.push(data.results[elem].picture.large);
+        console.log(data.results[elem].picture.large);
       }
     }
   });
