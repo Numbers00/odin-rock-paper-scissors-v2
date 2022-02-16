@@ -84,28 +84,21 @@ function capitalizeFirstLetter(string) {
 
 // adds up to a total of 64 avatar cards including the player
 async function startMatching() {
-  let picsumImages = [];
-
-  // Credits: https://stackoverflow.com/a/12460434
-  await $.getJSON('https://picsum.photos/v2/list', (data) => {
-    for (let i = 0; i < data.length; i++) {
-      picsumImages.push(data[i]['download_url']);
-    }
-  });
-
   const imageURL = document.getElementById('image').value;
 
   if (imageURL !== '' && imageURL !== null) images.push(imageURL);
   else images.push('imgs/template_avatar.png');
 
-  for (let i = 1, j = 0; i < 64; i++) {
-    if (j <= 29) {
-      if (Math.floor(Math.random() * 3) !== 0) {
-        images.push(picsumImages[j]);
-        j++;
-      } else images.push('imgs/template_avatar.png');
-    } else images.push('imgs/template_avatar.png');
-  }
+  await $.ajax({
+    url: 'https://randomuser.me/api/?results=63',
+    dataType: 'json',
+    success: (data) => {
+      for (elem in data.results) {
+        images.push(data.results[elem].picture.medium);
+        console.log(data.results[elem].picture.medium);
+      }
+    }
+  });
 
   document.getElementsByClassName('avatar-card')[0].remove();
 
