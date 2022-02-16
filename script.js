@@ -101,7 +101,7 @@ async function startMatching() {
 
   addAvatarCards(0);
 
-  // # of joined gladiators in the matching phase will start at this number
+  // # of joined contestants in the matching phase will start at this number
   let randNum = Math.floor(Math.random() * 23) + 25;
 
   for (let i = 1; i < randNum; i++) {
@@ -132,7 +132,7 @@ async function startMatching() {
     }
     addAvatarCards(i);
 
-    // at times, more than 1 new gladiators will join
+    // at times, more than 1 new contestants will join
     if (Math.floor((Math.random() * 3) + 1) % 2 != 0) await wait(Math.random() * 400);
 
     document.getElementById('left-div-title').textContent = `Waiting for Other Players... (${names.length}/64)`;

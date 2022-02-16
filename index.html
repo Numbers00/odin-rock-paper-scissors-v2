@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rock Paper Scissors Gladiators</title>
+  <title>Rock Paper Scissors</title>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="bundle.js" defer></script>
@@ -27,16 +27,19 @@
 			goes on until one is left standing and is hailed champion!
 			<br><br>
 			The common rules apply, rock beats scissors and so on. Starting with a timer of
-			10 seconds, the timer decrementing by 1 each round. Contestants reserve the
-			right to surrender each round at the expense of their prize.
+			10 seconds, the timer decrements by 1 each round. Contestants have no right for
+      surrender, it's win or lose, and the winner takes all.
 			<br><br>
-			Do you have what it takes to win?
+			Do you have what it takes to win? <b>press the up or down arrow key to navigate....</b>
+      <a class="link" href="https://github.com/Numbers00/odin-rock-paper-scissors-v2" target="_blank">
+        github
+      </a>
 		</p>
 	</div>
-  
+
   <div class="bottom-div invisible">
     <div class="left-div">
-      <h1 id="left-div-title">Create your Avatar</h1>
+      <h2 id="left-div-title">Create your Avatar</h2>
     
       <div class="avatar-cards">
         <div class="avatar-card">
@@ -56,21 +59,26 @@
     </div>
 
     <div class="right-div">
-	  	<h1>Rock Paper Scissors!</h1>
+	  	<h2>Mechanics</h2>
 
-	  	<!-- col 80 is where you switch to a new line for readability -->
 	  	<p>
-	  		A battle royale! 64 Contestants pick their avatar and fight to the death...
-	  		with rock paper scissors! Contestants will face a random opponent each time,
-	  		the first to reach a score of 5 survives and moves on to face the next! This
-	  		goes on until one is left standing and is hailed champion!
-	  		<br><br>
-	  		The common rules apply, rock beats scissors and so on. Starting with a timer of
-	  		10 seconds, the timer decrementing by 1 each round. Contestants reserve the
-	  		right to surrender each round at the expense of their prize.
-	  		<br><br>
-	  		Do you have what it takes to win?
+	  		Type your name and epithet (optional) on the left card to create your avatar
+        and press enter. You will be matched with 63 other <s>computers</s> players.
+        You will fight using rock, paper, scissors, and the first to reach a score of 
+        five (5) wins the round.
+        <br><br>
+        Each round divides the players into winners and losers until one is left and
+        titled champion. Each round matches you with a random winner to fight against.
 	  	</p>
+
+      <h2>Controls</h2>
+
+      <ul>
+        <li>Up and down arrow keys to navigate</li>
+        <li>Rock: Press R or 1</li>
+        <li>Paper: Press P or 2</li>
+        <li>Scissors: press S or 3</li>
+      </ul>
 	  </div>
   </div>
 </body>

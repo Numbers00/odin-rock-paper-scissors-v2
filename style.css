@@ -14,10 +14,6 @@
   gap: 4%;
 }
 
-.invisible {
-  visibility: hidden;
-}
-
 .left-div {
   width: 60%;
   display: flex;
@@ -63,6 +59,11 @@
   width: 100%;
   margin: 10px 0;
   border: none;
+}
+
+.link {
+  color: blue;
+  text-decoration: none;
 }
 
 .invisible {
