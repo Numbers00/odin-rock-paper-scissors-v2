@@ -1,18 +1,18 @@
-// window.addEventListener('keydown', (e) => {
-//   if (e.keyCode === 40) {
-//     $('.top-div').fadeOut(200);
+window.addEventListener('keydown', (e) => {
+  if (e.keyCode === 40) {
+    $('.top-div').fadeOut(200);
 
-//     setTimeout(() => {
-//       $('.bottom-div').fadeIn(200).removeClass('invisible');
-//     }, 200);
-//   } else if (e.keyCode === 38) {
-//     $('.bottom-div').fadeOut(200);
+    setTimeout(() => {
+      $('.bottom-div').fadeIn(200).removeClass('invisible');
+    }, 200);
+  } else if (e.keyCode === 38) {
+    $('.bottom-div').fadeOut(200);
 
-//     setTimeout(() => {
-//       $('.top-div').fadeIn(200);
-//     }, 200);
-//   }
-// });
+    setTimeout(() => {
+      $('.top-div').fadeIn(200);
+    }, 200);
+  }
+});
 
 // Credits: https://stackoverflow.com/a/53452241
 function wait(ms) {
