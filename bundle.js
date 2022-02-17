@@ -1235,6 +1235,26 @@ function wait(ms) {
   })
 }
 
+
+// Credits: https://stackoverflow.com/a/2450976
+function shuffle(array) {
+  let currentIndex = array.length,  randomIndex;
+
+  // While there remain elements to shuffle...
+  while (currentIndex != 0) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+
+  return array;
+}
+
 let gamerNamer = require('gamer-namer');
 let epithetGiver = require('epithet');
 
@@ -1246,6 +1266,9 @@ let champions = [0];
 let wins = [0];
 
 let playerSelection = '';
+
+let nonParticipants = [...Array(63+1).keys()].slice(1);
+let eliminatedParticipants = [];
 
 window.onload = () => {
   document.getElementById('name').placeholder = 'Name: ' + gamerNamer.generateName().match(/[A-Z][a-z]+/g).join(' ');
@@ -1464,7 +1487,17 @@ function startGame() {
   console.log(roundDiv);
   roundDiv.classList.remove('invisible');
 
-  playRound(1);
+  startRound(1);
+}
+
+function startRound(roundNum) {
+  randNonParticipants = shuffle(nonParticipants);
+
+  startPlayerRound(roundNum, randNonParticipants.pop());
+
+  for (let i = 0; i < 30; i++) {
+    startOtherRounds(roundNum, randNonParticipants.pop(), randNonParticipants.pop());
+  }
 }
 
 function randomSelect() {
@@ -1544,8 +1577,18 @@ function cardsColorSwitch(result, playerSelection, enemySelection) {
   }
 }
 
-async function playRound(roundNum) {
-  let enemyIndex = Math.floor(Math.random() * 64) + 1;
+async function getNonParticipant() {
+  let randIndex;
+
+  while (randIndex !== undefined && nonParticipants.includes(randIndex)) {
+    randIndex = Math.floor(Math.random() * 64) + 1;
+  }
+  nonParticipants.push(randIndex);
+}
+
+async function startPlayerRound(roundNum, enemyIndex) {
+  console.log(names[enemyIndex]);
+  //let enemyIndex = await getNonParticipant();
 
   setupPlayer();
   setupEnemy(enemyIndex);
@@ -1568,10 +1611,15 @@ async function playRound(roundNum) {
   const leftScore = document.getElementById('left-score').querySelector('b');
   const rightScore = document.getElementById('right-score').querySelector('b');
   const roundHistory = document.querySelector('.round-history');
-  const playerRoundHistory = roundHistory.querySelector('ul');
 
-  for (let i = 0; playerScore <= 5 || enemyScore <= 5; i++) {
-    let selectTimer = Math.max(3, 11 - roundNum - i);
+  const playerRoundHistory = roundHistory.querySelector('ul');
+  let playerLi = document.createElement('li');
+
+  const overarchingHistory = document.querySelector('.round-right-div ul');
+  let overarchingLi = document.createElement('li');
+
+  for (let i = 0; playerScore <= 5 && enemyScore <= 5; i++) {
+    let selectTimer = Math.max(2, 11 - roundNum - i);
 
     let enemySelectDelay = (Math.random() * ((11 - roundNum) * 0.7)) + 1;
 
@@ -1586,7 +1634,7 @@ async function playRound(roundNum) {
       selectTimer--;
       enemySelectDelay--;
 
-      if (enemySelection === '' && enemySelectDelay <= 0) {
+      if (enemySelection === '' && enemySelectDelay <= 0.1) {
         enemySelection = randomSelect();
       }
 
@@ -1595,14 +1643,13 @@ async function playRound(roundNum) {
       await wait(1000);
     }
 
-    if (selectTimer <= 0 && playerSelection === '') {
+    if (selectTimer <= 0.1 && playerSelection === '') {
       playerSelection = randomSelect();
     }
 
     if (playerSelection !== '' && enemySelection !== '') {
       result = compareSelect(playerSelection, enemySelection);
       
-      let playerLi = document.createElement('li');
       playerLi.textContent = result;
 
       playerRock.classList = 'control-card player-card';
@@ -1613,27 +1660,124 @@ async function playRound(roundNum) {
       enemyPaper.classList = 'control-card enemy-card';
       enemyScissors.classList = 'control-card enemy-card';
 
-      console.log(playerSelection, enemySelection);
       if (result.includes('Win')) {
         playerScore++;
         leftScore.textContent = playerScore;
 
         playerLi.style.color = '#1e90ff';
         cardsColorSwitch('win', playerSelection, enemySelection);
+
+        overarchingLi.textContent = `${names[0]} beats ${names[enemyIndex]} w/ ${capitalizeFirstLetter(playerSelection)}`;
+        overarchingLi.style.color = '#1e90ff';
       } else if (result.includes('Lose')) {
         enemyScore++;
         rightScore.textContent = enemyScore;
 
         playerLi.style.color = '#dc143c';
         cardsColorSwitch('loss', playerSelection, enemySelection);
+
+        overarchingLi.textContent = `${names[enemyIndex]} beats ${names[0]} w/ ${capitalizeFirstLetter(enemySelection)}`;
+        overarchingLi.style.color = '#dc143c';
       } else {
         playerLi.style.color = '#3e3e3e';
         cardsColorSwitch('tie', playerSelection, enemySelection);
       }
 
       playerRoundHistory.prepend(playerLi);
+      
+      if (overarchingLi.textContent.length > 0) overarchingHistory.prepend(overarchingLi);
     }
   }
+
+  if (leftScore >= 5) {
+    playerLi.textContent = `You eliminated ${names[enemyIndex]} w/ ${capitalizeFirstLetter(playerSelection)}!!`;
+    playerLi.style.color = '#3e8e41';
+
+    overarchingLi.textContent = `${names[0]} eliminates ${names[enemyIndex]} w/ ${capitalizeFirstLetter(playerSelection)}`;
+    overarchingLi.style.color = '#3e8e41';
+  } else {
+    playerLi.textContent = `${names[enemyIndex]} eliminated you w/ ${capitalizeFirstLetter(enemySelection)}....`;
+    playerLi.style.color = '#dc143c';
+    
+    overarchingLi.textContent = `${names[enemyIndex]} eliminates ${names[0]} w/ ${capitalizeFirstLetter(enemySelection)}`;
+    overarchingLi.style.color = '#dc143c';
+  }
+
+  playerRoundHistory.prepend(playerLi);
+
+  overarchingHistory.prepend(overarchingLi);
+}
+
+async function startOtherRounds(roundNum, leftIndex, rightIndex) {
+  // await wait(delay * 20);
+  // let leftIndex = await getNonParticipant();
+  // let rightIndex = await getNonParticipant();
+
+  console.log(names[leftIndex], names[rightIndex]);
+
+  let leftSelection = '';
+  let rightSelection = '';
+  
+  let leftScore = 0;
+  let rightScore = 0;
+
+  const overarchingHistory = document.querySelector('.round-right-div ul');
+  let overarchingLi = document.createElement('li');
+
+  for (let i = 0; leftScore <= 5 && rightScore <= 5; i++) {
+    let selectTimer = Math.max(2, 11 - roundNum - i);
+
+    let leftSelectDelay = (Math.random() * ((11 - roundNum) * 0.7)) + 1;
+    let rightSelectDelay = (Math.random() * ((11 - roundNum) * 0.7)) + 1;
+
+    leftSelection = '';
+    rightSelection = '';
+    
+    let result = '';
+
+    while (selectTimer >= 0) {
+      selectTimer--;
+      leftSelectDelay--;
+      rightSelectDelay--;
+
+      if (leftSelection === '' && leftSelectDelay <= 0.1) {
+        leftSelection = randomSelect();
+      }
+
+      if (rightSelection === '' && rightSelectDelay <= 0.1) {
+        rightSelection = randomSelect();
+      }
+
+      if (leftSelection !== '' && rightSelection !== '') break;
+
+      await wait(1000);
+    }
+
+    if (leftSelection !== '' && rightSelection !== '') {
+      result = compareSelect(leftSelection, rightSelection);
+
+      if (result.includes('Win')) {
+        leftScore++;
+
+        overarchingLi.textContent = `${names[leftIndex]} beats ${names[rightIndex]} w/ ${capitalizeFirstLetter(leftSelection)}`;
+      } else if (result.includes('Lose')) {
+        rightScore++;
+
+        overarchingLi.textContent = `${names[rightIndex]} beats ${names[leftIndex]} w/ ${capitalizeFirstLetter(rightSelection)}`;
+      }
+      
+      if (overarchingLi.textContent.length > 0) overarchingHistory.prepend(overarchingLi);
+    }
+  }
+
+  if (leftScore >= 5) {
+    overarchingLi.textContent = `${names[leftIndex]} eliminates ${names[rightIndex]} w/ ${capitalizeFirstLetter(leftSelection)}`;
+  } else {
+    overarchingLi.textContent = `${names[rightIndex]} eliminates ${names[leftIndex]} w/ ${capitalizeFirstLetter(rightSelection)}`;
+  }
+
+  overarchingLi.style.color = yellow;
+  overarchingHistory.prepend(overarchingLi);
 }
 
 },{"epithet":1,"gamer-namer":3}]},{},[4]);
