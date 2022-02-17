@@ -406,7 +406,7 @@ async function startPlayerRound(roundNum, enemyIndex) {
   const overarchingHistory = document.querySelector('.round-right-div ul');
   let overarchingLi = document.createElement('li');
 
-  for (let i = 0; playerScore <= 5 && enemyScore <= 5; i++) {
+  for (let i = 0; playerScore < 5 && enemyScore < 5; i++) {
     let selectTimer = Math.max(2, 11 - roundNum - i);
 
     let enemySelectDelay = (Math.random() * ((11 - roundNum) * 0.7)) + 1;
@@ -422,7 +422,7 @@ async function startPlayerRound(roundNum, enemyIndex) {
       selectTimer--;
       enemySelectDelay--;
 
-      if (enemySelection === '' && enemySelectDelay <= 0.1) {
+      if (enemySelection === '' && enemySelectDelay === 0) {
         enemySelection = randomSelect();
       }
 
@@ -431,7 +431,7 @@ async function startPlayerRound(roundNum, enemyIndex) {
       await wait(1000);
     }
 
-    if (selectTimer <= 0.1 && playerSelection === '') {
+    if (selectTimer === 0 && playerSelection === '') {
       playerSelection = randomSelect();
     }
 
@@ -512,7 +512,7 @@ async function startOtherRounds(roundNum, leftIndex, rightIndex) {
   const overarchingHistory = document.querySelector('.round-right-div ul');
   let overarchingLi = document.createElement('li');
 
-  for (let i = 0; leftScore <= 5 && rightScore <= 5; i++) {
+  for (let i = 0; leftScore < 5 && rightScore < 5; i++) {
     let selectTimer = Math.max(2, 11 - roundNum - i);
 
     let leftSelectDelay = (Math.random() * ((11 - roundNum) * 0.7)) + 1;
@@ -528,11 +528,11 @@ async function startOtherRounds(roundNum, leftIndex, rightIndex) {
       leftSelectDelay--;
       rightSelectDelay--;
 
-      if (leftSelection === '' && leftSelectDelay <= 0.1) {
+      if (leftSelection === '' && leftSelectDelay === 0) {
         leftSelection = randomSelect();
       }
 
-      if (rightSelection === '' && rightSelectDelay <= 0.1) {
+      if (rightSelection === '' && rightSelectDelay === 0) {
         rightSelection = randomSelect();
       }
 
@@ -564,6 +564,6 @@ async function startOtherRounds(roundNum, leftIndex, rightIndex) {
     overarchingLi.textContent = `${names[rightIndex]} eliminates ${names[leftIndex]} w/ ${capitalizeFirstLetter(rightSelection)}`;
   }
 
-  overarchingLi.style.color = yellow;
+  overarchingLi.style.color = 'yellow';
   overarchingHistory.prepend(overarchingLi);
 }
