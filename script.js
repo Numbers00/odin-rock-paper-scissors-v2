@@ -356,10 +356,10 @@ async function playRound(roundNum) {
   const leftScore = document.getElementById('left-score').querySelector('b');
   const rightScore = document.getElementById('right-score').querySelector('b');
   const roundHistory = document.querySelector('.round-history');
-  const playerRoundHistory = roundResult.querySelector('ol');
+  const playerRoundHistory = roundHistory.querySelector('ul');
 
-  while (playerScore <= 5 || enemyScore <= 5) {
-    let selectTimer = 11 - roundNum;
+  for (let i = 0; playerScore <= 5 || enemyScore <= 5; i++) {
+    let selectTimer = Math.max(3, 11 - roundNum - i);
 
     let enemySelectDelay = (Math.random() * ((11 - roundNum) * 0.7)) + 1;
 
@@ -393,8 +393,6 @@ async function playRound(roundNum) {
       let playerLi = document.createElement('li');
       playerLi.textContent = result;
 
-      playerRoundHistory.appendChild(playerLi);
-
       playerRock.classList = 'control-card player-card';
       playerPaper.classList = 'control-card player-card';
       playerScissors.classList = 'control-card player-card';
@@ -407,13 +405,21 @@ async function playRound(roundNum) {
       if (result.includes('Win')) {
         playerScore++;
         leftScore.textContent = playerScore;
+
+        playerLi.style.color = '#1e90ff';
         cardsColorSwitch('win', playerSelection, enemySelection);
-        console.log(playerScore, enemyScore);
       } else if (result.includes('Lose')) {
         enemyScore++;
         rightScore.textContent = enemyScore;
+
+        playerLi.style.color = '#dc143c';
         cardsColorSwitch('loss', playerSelection, enemySelection);
-      } else cardsColorSwitch('tie', playerSelection, enemySelection);
+      } else {
+        playerLi.style.color = '#3e3e3e';
+        cardsColorSwitch('tie', playerSelection, enemySelection);
+      }
+
+      playerRoundHistory.prepend(playerLi);
     }
   }
 }

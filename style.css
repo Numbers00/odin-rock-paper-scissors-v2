@@ -59,6 +59,10 @@
   margin-left: 20%;
 }
 
+.round-history li {
+  width: 50%;
+}
+
 .left-contestant-div, .right-contestant-div {
   min-width: 50%;
   max-width: 50%;
