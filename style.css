@@ -129,12 +129,36 @@
 }
 
 .control-card:hover {
+  background-color: lightgreen;
   cursor: pointer;
+}
+
+.control-card:active {
+  background-color: #3e8e41;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
 }
 
 .link {
   color: blue;
   text-decoration: none;
+}
+
+.previous-win-card {
+  background-color: #1e90ff;
+}
+
+.previous-tie-card {
+  background-color: #3e3e3e;
+}
+
+.previous-loss-card {
+  background-color: #dc143c;
+}
+
+.selected-card {
+  background-color: yellow;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
 }
 
 .removed {

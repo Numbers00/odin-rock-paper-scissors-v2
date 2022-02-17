@@ -1251,9 +1251,24 @@ window.onload = () => {
   document.getElementById('name').placeholder = 'Name: ' + gamerNamer.generateName().match(/[A-Z][a-z]+/g).join(' ');
   document.getElementById('epithet').placeholder = 'Epithet: ' + epithetGiver.choose().split('-').map(elem => capitalizeFirstLetter(elem)).join(' ');
 
-  document.getElementById('player-rock').addEventListener("click", () => playerSelection = 'rock');
-  document.getElementById('player-paper').addEventListener("click", () => playerSelection = 'paper');
-  document.getElementById('player-scissors').addEventListener("click", () => playerSelection = 'scissors');
+  document.getElementById('player-rock').addEventListener("click", (e) => {
+    document.getElementById('player-rock').classList.add('selected-card');
+    document.getElementById('player-paper').classList.remove('selected-card');
+    document.getElementById('player-scissors').classList.remove('selected-card');
+    playerSelection = 'rock';
+  });
+  document.getElementById('player-paper').addEventListener("click", (e) => {
+    document.getElementById('player-rock').classList.remove('selected-card');
+    document.getElementById('player-paper').classList.add('selected-card');
+    document.getElementById('player-scissors').classList.remove('selected-card');
+    playerSelection = 'paper';
+  });
+  document.getElementById('player-scissors').addEventListener("click", (e) => {
+    document.getElementById('player-rock').classList.remove('selected-card');
+    document.getElementById('player-paper').classList.remove('selected-card');
+    document.getElementById('player-scissors').classList.add('selected-card');
+    playerSelection = 'scissors';
+  });
 }
 
 document.getElementById('input-container').addEventListener('keydown', e => {
@@ -1484,6 +1499,51 @@ function compareSelect(leftSelection, rightSelection) {
     return result;
 }
 
+function cardsColorSwitch(result, playerSelection, enemySelection) {
+  const playerRock = document.getElementById('player-rock');
+  const playerPaper = document.getElementById('player-paper');
+  const playerScissors = document.getElementById('player-scissors');
+
+  const enemyRock = document.getElementById('enemy-rock');
+  const enemyPaper = document.getElementById('enemy-paper');
+  const enemyScissors = document.getElementById('scissors');
+
+  if (result === 'win') {
+    if (playerSelection === 'rock') {
+      playerRock.classList.add('previous-win-card');
+      enemyScissors.classList.add('previous-loss-card');
+    } else if (playerSelection === 'paper') {
+      playerPaper.classList.add('previous-win-card');
+      enemyRock.classList.add('previous-loss-card');
+    } else {
+      playerScissors.classList.add('previous-win-card');
+      enemyPaper.classList.add('previous-loss-card');
+    }
+  } else if (result === 'loss') {
+    if (playerSelection === 'rock') {
+      playerRock.classList.add('previous-loss-card');
+      enemyPaper.classList.add('previous-win-card');
+    } else if (playerSelection === 'paper') {
+      playerPaper.classList.add('previous-loss-card');
+      enemyScissors.classList.add('previous-win-card');
+    } else {
+      playerScissors.classList.add('previous-loss-card');
+      enemyRock.classList.add('previous-win-card');
+    }
+  } else {
+    if (playerSelection === 'rock') {
+      playerRock.classList.add('previous-tie-card');
+      enemyRock.classList.add('previous-tie-card');
+    } else if (playerSelection === 'paper') {
+      playerPaper.classList.add('previous-tie-card');
+      enemyPaper.classList.add('previous-tie-card');
+    } else {
+      playerScissors.classList.add('previous-tie-card');
+      enemyScissors.classList.add('previous-tie-card');
+    }
+  }
+}
+
 async function playRound(roundNum) {
   let enemyIndex = Math.floor(Math.random() * 64) + 1;
 
@@ -1543,10 +1603,12 @@ async function playRound(roundNum) {
         playerScore++;
         leftScore.textContent = playerScore;
         console.log(playerScore, enemyScore);
+        cardsColorSwitch('win', playerSelection, enemySelection);
       } else if (result.includes('Lose')) {
         enemyScore++;
         rightScore.textContent = enemyScore;
-      }
+        cardsColorSwitch('lose', playerSelection, enemySelection);
+      } else cardsColorSwitch('tie', playerSelection, enemySelection);
     }
   }
 }
