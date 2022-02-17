@@ -128,6 +128,10 @@
   transition: 0.3s;
 }
 
+.control-card:hover {
+  cursor: pointer;
+}
+
 .link {
   color: blue;
   text-decoration: none;

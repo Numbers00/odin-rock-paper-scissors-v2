@@ -31,11 +31,17 @@ let epithets = [];
 let images = [];
 
 let champions = [0];
-let victories = [0];
+let wins = [0];
+
+let playerSelection = '';
 
 window.onload = () => {
   document.getElementById('name').placeholder = 'Name: ' + gamerNamer.generateName().match(/[A-Z][a-z]+/g).join(' ');
   document.getElementById('epithet').placeholder = 'Epithet: ' + epithetGiver.choose().split('-').map(elem => capitalizeFirstLetter(elem)).join(' ');
+
+  document.getElementById('player-rock').addEventListener("click", () => playerSelection = 'rock');
+  document.getElementById('player-paper').addEventListener("click", () => playerSelection = 'paper');
+  document.getElementById('player-scissors').addEventListener("click", () => playerSelection = 'scissors');
 }
 
 document.getElementById('input-container').addEventListener('keydown', e => {
@@ -104,6 +110,7 @@ async function startMatching() {
     dataType: 'json',
     success: (data) => {
       for (elem in data.results) {
+        names.push(`${capitalizeFirstLetter(data.results[elem].name.first)} ${capitalizeFirstLetter(data.results[elem].name.last)}`);
         images.push(data.results[elem].picture.large);
       }
     }
@@ -115,16 +122,14 @@ async function startMatching() {
   let randNum = Math.floor(Math.random() * 23) + 25;
 
   for (let i = 1; i < randNum; i++) {
-    names.push(gamerNamer.generateName().match(/[A-Z][a-z]+/g).join(' '));
     epithets.push(epithetGiver.choose().split('-').map(elem => capitalizeFirstLetter(elem)).join(' '));
     champions.push(weightedRandom(0,64));
-    victories.push(champions[i] * 5 + weightedRandom(0,32));
+    wins.push(champions[i] * 5 + weightedRandom(0,32));
 
     if (names[i] === undefined) {
-      names.pop();
       epithets.pop();
       champions.pop();
-      victories.pop();
+      wins.pop();
       i--;
       continue;
     }
@@ -132,19 +137,17 @@ async function startMatching() {
     addAvatarCards(i);
   }
 
-  document.getElementById('left-div-title').textContent = `Waiting for Other Players... (${names.length}/64)`;
+  document.getElementById('left-div-title').textContent = `Waiting for Other Players... (${epithets.length}/64)`;
 
   for (let i = randNum; i < 64; i++) {
-    names.push(gamerNamer.generateName().match(/[A-Z][a-z]+/g).join(' '));
     epithets.push(epithetGiver.choose().split('-').map(elem => capitalizeFirstLetter(elem)).join(' '));
     champions.push(weightedRandom(0,64));
-    victories.push(champions[i] * 5 + weightedRandom(0,32));
+    wins.push(champions[i] * 5 + weightedRandom(0,32));
 
     if (names[i] === undefined) {
-      names.pop();
       epithets.pop();
       champions.pop();
-      victories.pop();
+      wins.pop();
       i--;
       continue;
     }
@@ -153,7 +156,7 @@ async function startMatching() {
     // at times, more than 1 new contestants will join
     if (Math.floor((Math.random() * 3) + 1) % 2 != 0) await wait(Math.random() * 400);
 
-    document.getElementById('left-div-title').textContent = `Waiting for Other Players... (${names.length}/64)`;
+    document.getElementById('left-div-title').textContent = `Waiting for Other Players... (${epithets.length}/64)`;
   }
 
   for (let i = 1; i <= 5; i++) {
@@ -191,15 +194,13 @@ function setupGameLayout() {
   avatarCard.appendChild(textContainer);
 }
 
-function setupGame(enemyIndex) {
-  const leftDiv = document.getElementsByClassName('left-div')[0];
-
+function setupPlayer() {
   const roundLeftDiv = document.getElementsByClassName('round-left-div')[0];
 
   const leftContestantDetails = roundLeftDiv.querySelector('.left-contestant-details');
 
   leftContestantDetails.querySelectorAll('p')[0].innerHTML = '<b>Champions:</b> ' + champions[0];
-  leftContestantDetails.querySelectorAll('p')[1].innerHTML = '<b>Victories:</b> ' + victories[0];
+  leftContestantDetails.querySelectorAll('p')[1].innerHTML = '<b>Wins:</b> ' + wins[0];
   
   const leftContestantCards = roundLeftDiv.querySelector('.left-contestant-cards');
 
@@ -209,11 +210,15 @@ function setupGame(enemyIndex) {
 
   leftTextContainer.querySelector('b').textContent = names[0];
   leftTextContainer.querySelector('p').textContent = epithets[0];
+}
 
+function setupEnemy(enemyIndex) {
+  const roundLeftDiv = document.getElementsByClassName('round-left-div')[0];
+  
   const rightContestantDetails = roundLeftDiv.querySelector('.right-contestant-details');
 
   rightContestantDetails.querySelectorAll('p')[0].innerHTML = '<b>Champions:</b> ' + champions[enemyIndex];
-  rightContestantDetails.querySelectorAll('p')[1].innerHTML = '<b>Victories:</b> ' + victories[enemyIndex];
+  rightContestantDetails.querySelectorAll('p')[1].innerHTML = '<b>Wins:</b> ' + wins[enemyIndex];
 
   const rightContestantCards = roundLeftDiv.querySelector('.right-contestant-cards');
 
@@ -232,8 +237,104 @@ function startGame() {
   console.log(roundDiv);
   roundDiv.classList.remove('invisible');
 
-  let enemyIndex = Math.floor(Math.random() * 64) + 1;
-
-  setupGame(enemyIndex);
+  playRound(1);
 }
 
+function randomSelect() {
+  return ['rock', 'paper', 'scissors'][Math.floor(Math.random() * 3)];
+}
+
+function compareSelect(leftSelection, rightSelection) {
+  let result = '';
+
+    switch (leftSelection) {
+        case 'rock':
+            rightSelection === 'rock' ? result = 'It\'s a Tie! You\'re both Rocks!' :
+                rightSelection === 'paper' ? result = 'You Lose! Paper beats Rock!' :
+                    result = 'You Win! Rock beats Scissors!';
+            break;
+        case 'paper':
+            rightSelection === 'rock' ? result = 'You Win! Paper beats Rock!' :
+                rightSelection === 'paper' ? result = 'It\s a Tie! You\'re both Papers!' :
+                    result = 'You Lose! Scissors beats Paper!';
+            break;
+        case 'scissors':
+            rightSelection === 'rock' ? result = 'You Lose! Rock beats Scissors!' :
+                rightSelection === 'paper' ? result = 'You Win! Scissors beats Paper!' :
+                    result = 'It\'s a Tie! You\'re both Scissors!';
+            break;
+        default:
+            rightSelection === 'rock' ? result = 'It\'s a Tie! You\'re both Rocks!' :
+                rightSelection === 'paper' ? result = 'You Lose! Paper beats Rock!' :
+                    result = 'You Win! Rock beats Scissors!';
+    }
+
+    return result;
+}
+
+async function playRound(roundNum) {
+  let enemyIndex = Math.floor(Math.random() * 64) + 1;
+
+  setupPlayer();
+  setupEnemy(enemyIndex);
+
+  document.getElementById('left-div-title').textContent = `Round ${roundNum}`;
+
+  let playerScore = 0;
+  let enemyScore = 0;
+
+  let enemySelection = '';
+  
+  const leftScore = document.getElementById('left-score').querySelector('b');
+  const rightScore = document.getElementById('right-score').querySelector('b');
+  const roundResult = document.querySelector('.round-result');
+  const playerRoundHistory = roundResult.querySelector('ol');
+
+  while (playerScore <= 5 || enemyScore <= 5) {
+    let selectTimer = 11 - roundNum;
+
+    let enemySelectDelay = (Math.random() * ((11 - roundNum) * 0.7)) + 1;
+
+    playerSelection = '';
+    enemySelection = '';
+    
+    let result = '';
+
+    while (selectTimer >= 0) {
+      document.getElementById('left-div-title').textContent = `Round ${roundNum}\r\nTimer: ${selectTimer}`;
+
+      selectTimer--;
+      enemySelectDelay--;
+
+      if (enemySelection === '' && enemySelectDelay <= 0) {
+        enemySelection = randomSelect();
+      }
+
+      if (playerSelection !== '' && enemySelection !== '') break;
+
+      await wait(1000);
+    }
+
+    if (selectTimer <= 0 && playerSelection === '') {
+      playerSelection = randomSelect();
+    }
+
+    if (playerSelection !== '' && enemySelection !== '') {
+      result = compareSelect(playerSelection, enemySelection);
+      
+      let playerLi = document.createElement('li');
+      playerLi.textContent = result;
+
+      playerRoundHistory.appendChild(playerLi);
+
+      if (result.includes('Win')) {
+        playerScore++;
+        leftScore.textContent = playerScore;
+        console.log(playerScore, enemyScore);
+      } else if (result.includes('Lose')) {
+        enemyScore++;
+        rightScore.textContent = enemyScore;
+      }
+    }
+  }
+}
