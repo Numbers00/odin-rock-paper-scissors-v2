@@ -128,12 +128,12 @@
   transition: 0.3s;
 }
 
-.control-card:hover {
+.player-card:hover {
   background-color: lightgreen;
   cursor: pointer;
 }
 
-.control-card:active {
+.player-card:active {
   background-color: #3e8e41;
   box-shadow: 0 5px #666;
   transform: translateY(4px);

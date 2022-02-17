@@ -1506,7 +1506,7 @@ function cardsColorSwitch(result, playerSelection, enemySelection) {
 
   const enemyRock = document.getElementById('enemy-rock');
   const enemyPaper = document.getElementById('enemy-paper');
-  const enemyScissors = document.getElementById('scissors');
+  const enemyScissors = document.getElementById('enemy-scissors');
 
   if (result === 'win') {
     if (playerSelection === 'rock') {
@@ -1551,6 +1551,14 @@ async function playRound(roundNum) {
   setupEnemy(enemyIndex);
 
   document.getElementById('left-div-title').textContent = `Round ${roundNum}`;
+
+  const playerRock = document.getElementById('player-rock');
+  const playerPaper = document.getElementById('player-paper');
+  const playerScissors = document.getElementById('player-scissors');
+
+  const enemyRock = document.getElementById('enemy-rock');
+  const enemyPaper = document.getElementById('enemy-paper');
+  const enemyScissors = document.getElementById('enemy-scissors');
 
   let playerScore = 0;
   let enemyScore = 0;
@@ -1599,15 +1607,24 @@ async function playRound(roundNum) {
 
       playerRoundHistory.appendChild(playerLi);
 
+      playerRock.classList = 'control-card player-card';
+      playerPaper.classList = 'control-card player-card';
+      playerScissors.classList = 'control-card player-card';
+
+      enemyRock.classList = 'control-card enemy-card';
+      enemyPaper.classList = 'control-card enemy-card';
+      enemyScissors.classList = 'control-card enemy-card';
+
+      console.log(playerSelection, enemySelection);
       if (result.includes('Win')) {
         playerScore++;
         leftScore.textContent = playerScore;
-        console.log(playerScore, enemyScore);
         cardsColorSwitch('win', playerSelection, enemySelection);
+        console.log(playerScore, enemyScore);
       } else if (result.includes('Lose')) {
         enemyScore++;
         rightScore.textContent = enemyScore;
-        cardsColorSwitch('lose', playerSelection, enemySelection);
+        cardsColorSwitch('loss', playerSelection, enemySelection);
       } else cardsColorSwitch('tie', playerSelection, enemySelection);
     }
   }
