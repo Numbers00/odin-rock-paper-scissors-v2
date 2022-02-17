@@ -355,7 +355,7 @@ async function playRound(roundNum) {
   
   const leftScore = document.getElementById('left-score').querySelector('b');
   const rightScore = document.getElementById('right-score').querySelector('b');
-  const roundResult = document.querySelector('.round-result');
+  const roundHistory = document.querySelector('.round-history');
   const playerRoundHistory = roundResult.querySelector('ol');
 
   while (playerScore <= 5 || enemyScore <= 5) {
