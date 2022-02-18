@@ -1270,6 +1270,8 @@ let playerSelection = '';
 let nonParticipants = [...Array(63+1).keys()].slice(1);
 let advancingParticipants = [];
 
+let playerIsEliminated = false;
+
 window.onload = () => {
   document.getElementById('name').placeholder = 'Name: ' + gamerNamer.generateName().match(/[A-Z][a-z]+/g).join(' ');
   document.getElementById('epithet').placeholder = 'Epithet: ' + epithetGiver.choose().split('-').map(elem => capitalizeFirstLetter(elem)).join(' ');
@@ -1464,22 +1466,40 @@ function setupPlayer() {
   leftTextContainer.querySelector('p').textContent = epithets[0];
 }
 
-function setupEnemy(enemyIndex) {
+function setupLeft(leftIndex) {
+  const roundLeftDiv = document.getElementsByClassName('round-left-div')[0];
+
+  const leftContestantDetails = roundLeftDiv.querySelector('.left-contestant-details');
+
+  leftContestantDetails.querySelectorAll('p')[0].innerHTML = '<b>Champions:</b> ' + champions[leftIndex];
+  leftContestantDetails.querySelectorAll('p')[1].innerHTML = '<b>Wins:</b> ' + wins[leftIndex];
+  
+  const leftContestantCards = roundLeftDiv.querySelector('.left-contestant-cards');
+
+  leftContestantCards.querySelector('img').src = images[leftIndex];
+
+  const leftTextContainer = leftContestantCards.querySelector('.text-container');
+
+  leftTextContainer.querySelector('b').textContent = names[leftIndex];
+  leftTextContainer.querySelector('p').textContent = epithets[leftIndex];
+}
+
+function setupRight(rightIndex) {
   const roundLeftDiv = document.getElementsByClassName('round-left-div')[0];
 
   const rightContestantDetails = roundLeftDiv.querySelector('.right-contestant-details');
 
-  rightContestantDetails.querySelectorAll('p')[0].innerHTML = '<b>Champions:</b> ' + champions[enemyIndex];
-  rightContestantDetails.querySelectorAll('p')[1].innerHTML = '<b>Wins:</b> ' + wins[enemyIndex];
+  rightContestantDetails.querySelectorAll('p')[0].innerHTML = '<b>Champions:</b> ' + champions[rightIndex];
+  rightContestantDetails.querySelectorAll('p')[1].innerHTML = '<b>Wins:</b> ' + wins[rightIndex];
 
   const rightContestantCards = roundLeftDiv.querySelector('.right-contestant-cards');
 
-  rightContestantCards.querySelector('img').src = images[enemyIndex];
+  rightContestantCards.querySelector('img').src = images[rightIndex];
 
   const rightTextContainer = rightContestantCards.querySelector('.text-container');
 
-  rightTextContainer.querySelector('b').textContent = names[enemyIndex];
-  rightTextContainer.querySelector('p').textContent = epithets[enemyIndex];
+  rightTextContainer.querySelector('b').textContent = names[rightIndex];
+  rightTextContainer.querySelector('p').textContent = epithets[rightIndex];
 }
 
 function startGame() {
@@ -1547,7 +1567,7 @@ function compareSelect(leftSelection, rightSelection) {
     return result;
 }
 
-function cardsColorSwitch(result, playerSelection, enemySelection) {
+function cardsColorSwitch(result, playerSelection) {
   const playerRock = document.getElementById('player-rock');
   const playerPaper = document.getElementById('player-paper');
   const playerScissors = document.getElementById('player-scissors');
@@ -1602,10 +1622,9 @@ function cardsColorSwitch(result, playerSelection, enemySelection) {
 // }
 
 async function startPlayerRound(roundNum, enemyIndex) {
-  //let enemyIndex = await getNonParticipant();
 
   setupPlayer();
-  setupEnemy(enemyIndex);
+  setupRight(enemyIndex);
 
   document.getElementById('left-div-title').textContent = `Round ${roundNum}`;
 
@@ -1681,7 +1700,7 @@ async function startPlayerRound(roundNum, enemyIndex) {
         leftScore.textContent = playerScore;
 
         playerLi.style.color = '#1e90ff';
-        cardsColorSwitch('win', playerSelection, enemySelection);
+        cardsColorSwitch('win', playerSelection);
 
         overarchingLi.textContent = `${names[0]} beats ${names[enemyIndex]} w/ ${capitalizeFirstLetter(playerSelection)}`;
         overarchingLi.style.color = '#1e90ff';
@@ -1690,13 +1709,13 @@ async function startPlayerRound(roundNum, enemyIndex) {
         rightScore.textContent = enemyScore;
 
         playerLi.style.color = '#dc143c';
-        cardsColorSwitch('loss', playerSelection, enemySelection);
+        cardsColorSwitch('loss', playerSelection);
 
         overarchingLi.textContent = `${names[enemyIndex]} beats ${names[0]} w/ ${capitalizeFirstLetter(enemySelection)}`;
         overarchingLi.style.color = '#dc143c';
       } else {
         playerLi.style.color = '#3e3e3e';
-        cardsColorSwitch('tie', playerSelection, enemySelection);
+        cardsColorSwitch('tie', playerSelection);
       }
 
       playerRoundHistory.prepend(playerLi);
@@ -1716,6 +1735,8 @@ async function startPlayerRound(roundNum, enemyIndex) {
 
     waitForNextRound(roundNum);
   } else {
+    playerIsEliminated = true;
+
     advancingParticipants.push(enemyIndex);
 
     playerLi.textContent = `${names[enemyIndex]} eliminated you w/ ${capitalizeFirstLetter(enemySelection)}....`;
@@ -1733,6 +1754,11 @@ async function startPlayerRound(roundNum, enemyIndex) {
 }
 
 async function startOtherRounds(roundNum, leftIndex, rightIndex) {
+
+  if (playerIsEliminated) {
+    setupLeft(leftIndex);
+    setupRight(rightIndex);
+  }
 
   let leftSelection = '';
   let rightSelection = '';
