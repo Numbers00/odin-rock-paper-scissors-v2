@@ -1272,30 +1272,46 @@ let advancingParticipants = [];
 
 let playerIsEliminated = false;
 
+function clickPlayerRock() {
+  document.getElementById('player-rock').classList.add('selected-card');
+  document.getElementById('player-paper').classList.remove('selected-card');
+  document.getElementById('player-scissors').classList.remove('selected-card');
+  playerSelection = 'rock';
+}
+
+function clickPlayerPaper() {
+  document.getElementById('player-rock').classList.remove('selected-card');
+  document.getElementById('player-paper').classList.add('selected-card');
+  document.getElementById('player-scissors').classList.remove('selected-card');
+  playerSelection = 'paper';
+}
+
+function clickPlayerScissors() {
+  document.getElementById('player-rock').classList.remove('selected-card');
+  document.getElementById('player-paper').classList.remove('selected-card');
+  document.getElementById('player-scissors').classList.add('selected-card');
+  playerSelection = 'scissors';
+}
+
+function addControlCardListeners() {
+  document.getElementById('player-rock').addEventListener("click", clickPlayerRock);
+  document.getElementById('player-paper').addEventListener("click", clickPlayerPaper);
+  document.getElementById('player-scissors').addEventListener("click", clickPlayerScissors);
+}
+
+function removeControlCardListeners() {
+  document.getElementById('player-rock').removeEventListener("click", clickPlayerRock);
+  document.getElementById('player-paper').removeEventListener("click", clickPlayerPaper);
+  document.getElementById('player-scissors').removeEventListener("click", clickPlayerScissors);
+}
+
 window.onload = () => {
   document.getElementById('name').placeholder = 'Name: ' + gamerNamer.generateName().match(/[A-Z][a-z]+/g).join(' ');
   document.getElementById('epithet').placeholder = 'Epithet: ' + epithetGiver.choose().split('-').map(elem => capitalizeFirstLetter(elem)).join(' ');
 
   console.log(nonParticipants);
 
-  document.getElementById('player-rock').addEventListener("click", (e) => {
-    document.getElementById('player-rock').classList.add('selected-card');
-    document.getElementById('player-paper').classList.remove('selected-card');
-    document.getElementById('player-scissors').classList.remove('selected-card');
-    playerSelection = 'rock';
-  });
-  document.getElementById('player-paper').addEventListener("click", (e) => {
-    document.getElementById('player-rock').classList.remove('selected-card');
-    document.getElementById('player-paper').classList.add('selected-card');
-    document.getElementById('player-scissors').classList.remove('selected-card');
-    playerSelection = 'paper';
-  });
-  document.getElementById('player-scissors').addEventListener("click", (e) => {
-    document.getElementById('player-rock').classList.remove('selected-card');
-    document.getElementById('player-paper').classList.remove('selected-card');
-    document.getElementById('player-scissors').classList.add('selected-card');
-    playerSelection = 'scissors';
-  });
+  addControlCardListeners();
 }
 
 document.getElementById('input-container').addEventListener('keydown', e => {
@@ -1514,6 +1530,24 @@ function startGame() {
 function startRound(roundNum) {
   document.getElementById('left-score').querySelector('b').textContent = 0;
   document.getElementById('right-score').querySelector('b').textContent = 0;
+
+  const playerRock = document.getElementById('player-rock');
+  const playerPaper = document.getElementById('player-paper');
+  const playerScissors = document.getElementById('player-scissors');
+
+  const enemyRock = document.getElementById('enemy-rock');
+  const enemyPaper = document.getElementById('enemy-paper');
+  const enemyScissors = document.getElementById('enemy-scissors');
+
+  playerRock.classList = 'control-card player-card';
+  playerPaper.classList = 'control-card player-card';
+  playerScissors.classList = 'control-card player-card';
+
+  enemyRock.classList = 'control-card enemy-card';
+  enemyPaper.classList = 'control-card enemy-card';
+  enemyScissors.classList = 'control-card enemy-card';
+
+  if (!playerIsEliminated) addControlCardListeners();
 
   advancingParticipants = [];
 
@@ -1833,6 +1867,24 @@ async function startOtherRounds(roundNum, leftIndex, rightIndex) {
 }
 
 async function waitForNextRound(roundNum) {
+  const playerRock = document.getElementById('player-rock');
+  const playerPaper = document.getElementById('player-paper');
+  const playerScissors = document.getElementById('player-scissors');
+
+  const enemyRock = document.getElementById('enemy-rock');
+  const enemyPaper = document.getElementById('enemy-paper');
+  const enemyScissors = document.getElementById('enemy-scissors');
+
+  playerRock.classList = 'control-card';
+  playerPaper.classList = 'control-card';
+  playerScissors.classList = 'control-card';
+
+  enemyRock.classList = 'control-card enemy-card';
+  enemyPaper.classList = 'control-card enemy-card';
+  enemyScissors.classList = 'control-card enemy-card';
+
+  removeControlCardListeners();
+
   while (advancingParticipants.length < names.length/(2 ** roundNum)) {
     document.getElementById('left-div-title').textContent = `Waiting for Other Players... (${advancingParticipants.length}/${names.length/(2 ** roundNum)})`;
     //console.log(advancingParticipants);
