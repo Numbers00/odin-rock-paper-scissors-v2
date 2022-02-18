@@ -44,6 +44,9 @@
 
 .round-right-div {
   width: 30%;
+  max-height: 300px;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .contestants-div {

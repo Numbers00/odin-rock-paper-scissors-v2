@@ -56,11 +56,13 @@ let wins = [0];
 let playerSelection = '';
 
 let nonParticipants = [...Array(63+1).keys()].slice(1);
-let eliminatedParticipants = [];
+let advancingParticipants = [];
 
 window.onload = () => {
   document.getElementById('name').placeholder = 'Name: ' + gamerNamer.generateName().match(/[A-Z][a-z]+/g).join(' ');
   document.getElementById('epithet').placeholder = 'Epithet: ' + epithetGiver.choose().split('-').map(elem => capitalizeFirstLetter(elem)).join(' ');
+
+  console.log(nonParticipants);
 
   document.getElementById('player-rock').addEventListener("click", (e) => {
     document.getElementById('player-rock').classList.add('selected-card');
@@ -207,30 +209,30 @@ async function startMatching() {
   }
 }
 
-function setupGameLayout() {
-  const avatarCard = document.createElement('div');
-  avatarCard.classList.add("avatar-card");
+// function setupGameLayout() {
+//   const avatarCard = document.createElement('div');
+//   avatarCard.classList.add("avatar-card");
 
-  const avatarImg = document.createElement('img');
-  avatarImg.src = images[index];
-  avatarImg.alt = 'Avatar';
-  avatarCard.appendChild(avatarImg);
+//   const avatarImg = document.createElement('img');
+//   avatarImg.src = images[index];
+//   avatarImg.alt = 'Avatar';
+//   avatarCard.appendChild(avatarImg);
 
-  const textContainer = document.createElement('div');
-  textContainer.classList.add('text-container');
+//   const textContainer = document.createElement('div');
+//   textContainer.classList.add('text-container');
 
-  const h4 = document.createElement('h4');
-  h4.style.margin = 2;
-  h4.textContent = names[index];
-  textContainer.appendChild(h4);
+//   const h4 = document.createElement('h4');
+//   h4.style.margin = 2;
+//   h4.textContent = names[index];
+//   textContainer.appendChild(h4);
 
-  const para = document.createElement('p');
-  para.style.margin = 2;
-  para.textContent = epithets[index];
-  textContainer.appendChild(para);
+//   const para = document.createElement('p');
+//   para.style.margin = 2;
+//   para.textContent = epithets[index];
+//   textContainer.appendChild(para);
 
-  avatarCard.appendChild(textContainer);
-}
+//   avatarCard.appendChild(textContainer);
+// }
 
 function setupPlayer() {
   const roundLeftDiv = document.getElementsByClassName('round-left-div')[0];
@@ -252,7 +254,7 @@ function setupPlayer() {
 
 function setupEnemy(enemyIndex) {
   const roundLeftDiv = document.getElementsByClassName('round-left-div')[0];
-  
+
   const rightContestantDetails = roundLeftDiv.querySelector('.right-contestant-details');
 
   rightContestantDetails.querySelectorAll('p')[0].innerHTML = '<b>Champions:</b> ' + champions[enemyIndex];
@@ -272,18 +274,31 @@ function startGame() {
   $('.avatar-cards').fadeOut(200);
 
   let roundDiv = document.querySelector('.round-div');
-  console.log(roundDiv);
   roundDiv.classList.remove('invisible');
 
   startRound(1);
 }
 
 function startRound(roundNum) {
-  randNonParticipants = shuffle(nonParticipants);
+  document.getElementById('left-score').querySelector('b').textContent = 0;
+  document.getElementById('right-score').querySelector('b').textContent = 0;
+
+  advancingParticipants = [];
+
+  let randNonParticipants = [];
+
+  if (nonParticipants.includes(0)) {
+    randNonParticipants.push(nonParticipants.shift());
+    randNonParticipants = randNonParticipants.concat(shuffle(nonParticipants));
+  } else {
+    randNonParticipants = shuffle(nonParticipants);
+  }
+
+  console.log(randNonParticipants);
 
   startPlayerRound(roundNum, randNonParticipants.pop());
 
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < (names.length/(2 ** roundNum))-1; i++) {
     startOtherRounds(roundNum, randNonParticipants.pop(), randNonParticipants.pop());
   }
 }
@@ -365,17 +380,16 @@ function cardsColorSwitch(result, playerSelection, enemySelection) {
   }
 }
 
-async function getNonParticipant() {
-  let randIndex;
+// async function getNonParticipant() {
+//   let randIndex;
 
-  while (randIndex !== undefined && nonParticipants.includes(randIndex)) {
-    randIndex = Math.floor(Math.random() * 64) + 1;
-  }
-  nonParticipants.push(randIndex);
-}
+//   while (randIndex !== undefined && nonParticipants.includes(randIndex)) {
+//     randIndex = Math.floor(Math.random() * 64) + 1;
+//   }
+//   nonParticipants.push(randIndex);
+// }
 
 async function startPlayerRound(roundNum, enemyIndex) {
-  console.log(names[enemyIndex]);
   //let enemyIndex = await getNonParticipant();
 
   setupPlayer();
@@ -406,21 +420,27 @@ async function startPlayerRound(roundNum, enemyIndex) {
   const overarchingHistory = document.querySelector('.round-right-div ul');
   let overarchingLi = document.createElement('li');
 
-  for (let i = 0; playerScore < 5 && enemyScore < 5; i++) {
+  for (let i = 0; playerScore < 2 && enemyScore < 2; i++) {
     let selectTimer = Math.max(2, 11 - roundNum - i);
 
-    let enemySelectDelay = (Math.random() * ((11 - roundNum) * 0.7)) + 1;
+    let enemySelectDelay = Math.floor((Math.random() * ((11 - roundNum) * 0.7)) + 1);
 
     playerSelection = '';
     enemySelection = '';
     
     let result = '';
 
-    while (selectTimer >= 0) {
+    do {
       document.getElementById('left-div-title').textContent = `Round ${roundNum}\r\nTimer: ${selectTimer}`;
 
       selectTimer--;
       enemySelectDelay--;
+
+      enemySelectDelay = Math.min(selectTimer, enemySelectDelay);
+
+      if (playerSelection === '' && selectTimer === 0) {
+        playerSelection = randomSelect();
+      }
 
       if (enemySelection === '' && enemySelectDelay === 0) {
         enemySelection = randomSelect();
@@ -429,11 +449,7 @@ async function startPlayerRound(roundNum, enemyIndex) {
       if (playerSelection !== '' && enemySelection !== '') break;
 
       await wait(1000);
-    }
-
-    if (selectTimer === 0 && playerSelection === '') {
-      playerSelection = randomSelect();
-    }
+    } while (selectTimer > 0);
 
     if (playerSelection !== '' && enemySelection !== '') {
       result = compareSelect(playerSelection, enemySelection);
@@ -477,18 +493,26 @@ async function startPlayerRound(roundNum, enemyIndex) {
     }
   }
 
-  if (leftScore >= 5) {
+  if (playerScore === 2) {
+    advancingParticipants.unshift(0);
+
     playerLi.textContent = `You eliminated ${names[enemyIndex]} w/ ${capitalizeFirstLetter(playerSelection)}!!`;
     playerLi.style.color = '#3e8e41';
 
     overarchingLi.textContent = `${names[0]} eliminates ${names[enemyIndex]} w/ ${capitalizeFirstLetter(playerSelection)}`;
     overarchingLi.style.color = '#3e8e41';
+
+    waitForNextRound(roundNum);
   } else {
+    advancingParticipants.push(enemyIndex);
+
     playerLi.textContent = `${names[enemyIndex]} eliminated you w/ ${capitalizeFirstLetter(enemySelection)}....`;
     playerLi.style.color = '#dc143c';
     
     overarchingLi.textContent = `${names[enemyIndex]} eliminates ${names[0]} w/ ${capitalizeFirstLetter(enemySelection)}`;
     overarchingLi.style.color = '#dc143c';
+
+    waitForNextRound(roundNum);
   }
 
   playerRoundHistory.prepend(playerLi);
@@ -497,11 +521,6 @@ async function startPlayerRound(roundNum, enemyIndex) {
 }
 
 async function startOtherRounds(roundNum, leftIndex, rightIndex) {
-  // await wait(delay * 20);
-  // let leftIndex = await getNonParticipant();
-  // let rightIndex = await getNonParticipant();
-
-  console.log(names[leftIndex], names[rightIndex]);
 
   let leftSelection = '';
   let rightSelection = '';
@@ -512,21 +531,24 @@ async function startOtherRounds(roundNum, leftIndex, rightIndex) {
   const overarchingHistory = document.querySelector('.round-right-div ul');
   let overarchingLi = document.createElement('li');
 
-  for (let i = 0; leftScore < 5 && rightScore < 5; i++) {
+  for (let i = 0; leftScore < 2 && rightScore < 2; i++) {
     let selectTimer = Math.max(2, 11 - roundNum - i);
 
-    let leftSelectDelay = (Math.random() * ((11 - roundNum) * 0.7)) + 1;
-    let rightSelectDelay = (Math.random() * ((11 - roundNum) * 0.7)) + 1;
+    let leftSelectDelay = Math.floor((Math.random() * ((11 - roundNum) * 0.7)) + 1);
+    let rightSelectDelay = Math.floor((Math.random() * ((11 - roundNum) * 0.7)) + 1);
 
     leftSelection = '';
     rightSelection = '';
     
     let result = '';
 
-    while (selectTimer >= 0) {
+    do {
       selectTimer--;
       leftSelectDelay--;
       rightSelectDelay--;
+
+      leftSelectDelay = Math.min(selectTimer, leftSelectDelay);
+      rightSelectDelay = Math.min(selectTimer, rightSelectDelay);
 
       if (leftSelection === '' && leftSelectDelay === 0) {
         leftSelection = randomSelect();
@@ -539,7 +561,7 @@ async function startOtherRounds(roundNum, leftIndex, rightIndex) {
       if (leftSelection !== '' && rightSelection !== '') break;
 
       await wait(1000);
-    }
+    } while (selectTimer > 0);
 
     if (leftSelection !== '' && rightSelection !== '') {
       result = compareSelect(leftSelection, rightSelection);
@@ -558,12 +580,30 @@ async function startOtherRounds(roundNum, leftIndex, rightIndex) {
     }
   }
 
-  if (leftScore >= 5) {
+  if (leftScore === 2) {
+    advancingParticipants.push(leftIndex);
+
     overarchingLi.textContent = `${names[leftIndex]} eliminates ${names[rightIndex]} w/ ${capitalizeFirstLetter(leftSelection)}`;
   } else {
+    advancingParticipants.push(rightIndex);
+
     overarchingLi.textContent = `${names[rightIndex]} eliminates ${names[leftIndex]} w/ ${capitalizeFirstLetter(rightSelection)}`;
   }
 
-  overarchingLi.style.color = 'yellow';
+  overarchingLi.style.color = 'orange';
   overarchingHistory.prepend(overarchingLi);
+}
+
+async function waitForNextRound(roundNum) {
+  while (advancingParticipants.length < names.length/(2 ** roundNum)) {
+    document.getElementById('left-div-title').textContent = `Waiting for Other Players... (${advancingParticipants.length}/${names.length/(2 ** roundNum)})`;
+    //console.log(advancingParticipants);
+    await wait(300);
+  }
+
+  console.log(advancingParticipants);
+
+  nonParticipants = [...advancingParticipants];
+  
+  startRound(++roundNum);
 }
