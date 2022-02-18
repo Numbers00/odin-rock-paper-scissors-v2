@@ -1,5 +1,4 @@
 window.addEventListener('keydown', (e) => {
-  console.log(e.keyCode);
   if (e.keyCode === 40) {
     $('.top-div').fadeOut(200);
 
@@ -86,6 +85,12 @@ function addControlCardListeners() {
   document.getElementById('player-rock').addEventListener("click", clickPlayerRock);
   document.getElementById('player-paper').addEventListener("click", clickPlayerPaper);
   document.getElementById('player-scissors').addEventListener("click", clickPlayerScissors);
+
+  window.addEventListener('keydown', (e) => {
+    if (e.keyCode === 82 || e.keyCode === 49) clickPlayerRock();
+    if (e.keyCode === 80 || e.keyCode === 50) clickPlayerPaper();
+    if (e.keyCode === 83 || e.keyCode === 51) clickPlayerScissors();
+  })
 }
 
 function removeControlCardListeners() {
@@ -496,7 +501,7 @@ async function startPlayerRound(roundNum, enemyIndex) {
   const overarchingHistory = document.querySelector('.round-right-div ul');
   let overarchingLi = document.createElement('li');
 
-  for (let i = 0; playerScore < 2 && enemyScore < 2; i++) {
+  for (let i = 0; playerScore < 5 && enemyScore < 5; i++) {
     let selectTimer = Math.max(2, 11 - roundNum - i);
 
     let enemySelectDelay = Math.floor((Math.random() * ((11 - roundNum) * 0.7)) + 1);
@@ -570,7 +575,7 @@ async function startPlayerRound(roundNum, enemyIndex) {
     }
   }
 
-  if (playerScore === 2) {
+  if (playerScore === 5) {
     wins[0]++;
     advancingParticipants.unshift(0);
 
@@ -634,7 +639,7 @@ async function showNonPlayerRound(roundNum, leftIndex, rightIndex) {
   const overarchingHistory = document.querySelector('.round-right-div ul');
   let overarchingLi = document.createElement('li');
 
-  for (let i = 0; playerScore < 2 && enemyScore < 2; i++) {
+  for (let i = 0; playerScore < 5 && enemyScore < 5; i++) {
     let selectTimer = Math.max(2, 11 - roundNum - i);
 
     let leftSelectDelay = Math.floor((Math.random() * ((11 - roundNum) * 0.7)) + 1);
@@ -709,7 +714,7 @@ async function showNonPlayerRound(roundNum, leftIndex, rightIndex) {
     }
   }
 
-  if (leftScore === 2) {
+  if (leftScore === 5) {
     wins[leftIndex]++;
 
     advancingParticipants.push(leftIndex);
@@ -741,7 +746,7 @@ async function startOtherRounds(roundNum, leftIndex, rightIndex) {
   const overarchingHistory = document.querySelector('.round-right-div ul');
   let overarchingLi = document.createElement('li');
 
-  for (let i = 0; leftScore < 2 && rightScore < 2; i++) {
+  for (let i = 0; leftScore < 5 && rightScore < 5; i++) {
     let selectTimer = Math.max(2, 11 - roundNum - i);
 
     let leftSelectDelay = Math.floor((Math.random() * ((11 - roundNum) * 0.7)) + 1);
@@ -790,7 +795,7 @@ async function startOtherRounds(roundNum, leftIndex, rightIndex) {
     }
   }
 
-  if (leftScore === 2) {
+  if (leftScore === 5) {
     wins[leftIndex]++;
 
     advancingParticipants.push(leftIndex);
