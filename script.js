@@ -552,6 +552,7 @@ async function startPlayerRound(roundNum, enemyIndex) {
   }
 
   if (playerScore === 2) {
+    wins[0]++;
     advancingParticipants.unshift(0);
 
     playerLi.textContent = `You eliminated ${names[enemyIndex]} w/ ${capitalizeFirstLetter(playerSelection)}!!`;
@@ -562,6 +563,8 @@ async function startPlayerRound(roundNum, enemyIndex) {
 
     waitForNextRound(roundNum);
   } else {
+    wins[enemyIndex]++;
+
     playerIsEliminated = true;
 
     advancingParticipants.push(enemyIndex);
@@ -646,10 +649,14 @@ async function startOtherRounds(roundNum, leftIndex, rightIndex) {
   }
 
   if (leftScore === 2) {
+    wins[leftIndex]++;
+
     advancingParticipants.push(leftIndex);
 
     overarchingLi.textContent = `${names[leftIndex]} eliminates ${names[rightIndex]} w/ ${capitalizeFirstLetter(leftSelection)}`;
   } else {
+    wins[rightIndex]++;
+
     advancingParticipants.push(rightIndex);
 
     overarchingLi.textContent = `${names[rightIndex]} eliminates ${names[leftIndex]} w/ ${capitalizeFirstLetter(rightSelection)}`;

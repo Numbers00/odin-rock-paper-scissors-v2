@@ -1539,15 +1539,20 @@ function startRound(roundNum) {
   const enemyPaper = document.getElementById('enemy-paper');
   const enemyScissors = document.getElementById('enemy-scissors');
 
-  playerRock.classList = 'control-card player-card';
-  playerPaper.classList = 'control-card player-card';
-  playerScissors.classList = 'control-card player-card';
+  if (!playerIsEliminated) {
+    playerRock.classList = 'control-card player-card';
+    playerPaper.classList = 'control-card player-card';
+    playerScissors.classList = 'control-card player-card';
+    addControlCardListeners();
+  } else {
+    playerRock.classList = 'control-card';
+    playerPaper.classList = 'control-card';
+    playerScissors.classList = 'control-card';
+  }
 
   enemyRock.classList = 'control-card enemy-card';
   enemyPaper.classList = 'control-card enemy-card';
   enemyScissors.classList = 'control-card enemy-card';
-
-  if (!playerIsEliminated) addControlCardListeners();
 
   advancingParticipants = [];
 
@@ -1759,6 +1764,7 @@ async function startPlayerRound(roundNum, enemyIndex) {
   }
 
   if (playerScore === 2) {
+    wins[0]++;
     advancingParticipants.unshift(0);
 
     playerLi.textContent = `You eliminated ${names[enemyIndex]} w/ ${capitalizeFirstLetter(playerSelection)}!!`;
@@ -1769,6 +1775,8 @@ async function startPlayerRound(roundNum, enemyIndex) {
 
     waitForNextRound(roundNum);
   } else {
+    wins[enemyIndex]++;
+
     playerIsEliminated = true;
 
     advancingParticipants.push(enemyIndex);
@@ -1853,10 +1861,14 @@ async function startOtherRounds(roundNum, leftIndex, rightIndex) {
   }
 
   if (leftScore === 2) {
+    wins[leftIndex]++;
+
     advancingParticipants.push(leftIndex);
 
     overarchingLi.textContent = `${names[leftIndex]} eliminates ${names[rightIndex]} w/ ${capitalizeFirstLetter(leftSelection)}`;
   } else {
+    wins[rightIndex]++;
+
     advancingParticipants.push(rightIndex);
 
     overarchingLi.textContent = `${names[rightIndex]} eliminates ${names[leftIndex]} w/ ${capitalizeFirstLetter(rightSelection)}`;
