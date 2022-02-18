@@ -1211,6 +1211,7 @@ module.exports = {
 
 },{"./data":2}],4:[function(require,module,exports){
 window.addEventListener('keydown', (e) => {
+  console.log(e.keyCode);
   if (e.keyCode === 40) {
     $('.top-div').fadeOut(200);
 
@@ -1522,7 +1523,7 @@ function startGame() {
   $('.avatar-cards').fadeOut(200);
 
   let roundDiv = document.querySelector('.round-div');
-  roundDiv.classList.remove('invisible');
+  roundDiv.classList.remove('removed');
 
   startRound(1);
 }
@@ -1530,6 +1531,22 @@ function startGame() {
 function startRound(roundNum) {
   document.getElementById('left-score').querySelector('b').textContent = 0;
   document.getElementById('right-score').querySelector('b').textContent = 0;
+
+  const playerRoundHistory = document.querySelector('.round-history ul');
+  
+  let child = playerRoundHistory.firstElementChild;
+  while (child) {
+    playerRoundHistory.removeChild(child);
+    child = playerRoundHistory.firstElementChild;
+  }
+
+  const overarchingHistory = document.querySelector('.round-right-div ul');
+
+  child = overarchingHistory.firstElementChild;
+  while (child) {
+    overarchingHistory.removeChild(child);
+    child = overarchingHistory.firstElementChild;
+  }
 
   const playerRock = document.getElementById('player-rock');
   const playerPaper = document.getElementById('player-paper');
@@ -1549,6 +1566,7 @@ function startRound(roundNum) {
     playerPaper.classList = 'control-card';
     playerScissors.classList = 'control-card';
   }
+  
 
   enemyRock.classList = 'control-card enemy-card';
   enemyPaper.classList = 'control-card enemy-card';
@@ -1565,11 +1583,10 @@ function startRound(roundNum) {
     randNonParticipants = shuffle(nonParticipants);
   }
 
-  console.log(randNonParticipants);
+  if (playerIsEliminated) showNonPlayerRound(roundNum, randNonParticipants.pop(), randNonParticipants.pop());
+  else startPlayerRound(roundNum, randNonParticipants.pop());
 
-  startPlayerRound(roundNum, randNonParticipants.pop());
-
-  for (let i = 0; i < (names.length/(2 ** roundNum))-1; i++) {
+  for (let i = 0; i < (names.length/(2 ** roundNum)) - 1; i++) {
     startOtherRounds(roundNum, randNonParticipants.pop(), randNonParticipants.pop());
   }
 }
@@ -1797,13 +1814,136 @@ async function startPlayerRound(roundNum, enemyIndex) {
   overarchingHistory.prepend(overarchingLi);
 }
 
-async function startOtherRounds(roundNum, leftIndex, rightIndex) {
+async function showNonPlayerRound(roundNum, leftIndex, rightIndex) {
+  setupLeft(leftIndex);
+  setupRight(rightIndex);
 
-  if (playerIsEliminated) {
-    setupLeft(leftIndex);
-    setupRight(rightIndex);
+  if (roundNum < 6) document.getElementById('left-div-title').textContent = `Round ${roundNum}`;
+  else document.getElementById('left-div-title').textContent = 'Final Round';
+
+  const leftRock = document.getElementById('player-rock');
+  const leftPaper = document.getElementById('player-paper');
+  const leftScissors = document.getElementById('player-scissors');
+
+  const rightRock = document.getElementById('enemy-rock');
+  const rightPaper = document.getElementById('enemy-paper');
+  const rightScissors = document.getElementById('enemy-scissors');
+
+  let leftSelection = '';
+  let rightSelection = '';
+
+  const leftScore = document.getElementById('left-score').querySelector('b');
+  const rightScore = document.getElementById('right-score').querySelector('b');
+  
+  let playerScore = 0;
+  let enemyScore = 0;
+
+  const roundHistory = document.querySelector('.round-history');
+
+  const playerRoundHistory = roundHistory.querySelector('ul');
+  let playerLi = document.createElement('li');
+
+  const overarchingHistory = document.querySelector('.round-right-div ul');
+  let overarchingLi = document.createElement('li');
+
+  for (let i = 0; playerScore < 2 && enemyScore < 2; i++) {
+    let selectTimer = Math.max(2, 11 - roundNum - i);
+
+    let leftSelectDelay = Math.floor((Math.random() * ((11 - roundNum) * 0.7)) + 1);
+    let rightSelectDelay = Math.floor((Math.random() * ((11 - roundNum) * 0.7)) + 1);
+
+    leftSelection = '';
+    rightSelection = '';
+    
+    let result = '';
+
+    do {
+      if (roundNum < 6) document.getElementById('left-div-title').innerHTML = `Round ${roundNum}<br>Timer: ${selectTimer}`;
+      else document.getElementById('left-div-title').innerHTML = `Final Round<br>Timer: ${selectTimer}`;
+
+      selectTimer--;
+      leftSelectDelay--;
+      rightSelectDelay--;
+
+      leftSelectDelay = Math.min(selectTimer, leftSelectDelay);
+      rightSelectDelay = Math.min(selectTimer, rightSelectDelay);
+
+      if (leftSelection === '' && leftSelectDelay === 0) {
+        leftSelection = randomSelect();
+      }
+
+      if (rightSelection === '' && rightSelectDelay === 0) {
+        rightSelection = randomSelect();
+      }
+
+      if (leftSelection !== '' && rightSelection !== '') break;
+
+      await wait(1000);
+    } while (selectTimer > 0);
+
+    if (leftSelection !== '' && rightSelection !== '') {
+      result = compareSelect(leftSelection, rightSelection);
+
+      playerLi.textContent = result;
+
+      leftRock.classList = 'control-card';
+      leftPaper.classList = 'control-card';
+      leftScissors.classList = 'control-card';
+
+      rightRock.classList = 'control-card enemy-card';
+      rightPaper.classList = 'control-card enemy-card';
+      rightScissors.classList = 'control-card enemy-card';
+
+      if (result.includes('Win')) {
+        playerScore++;
+        leftScore.textContent = playerScore;
+
+        playerLi.style.color = '#1e90ff';
+        cardsColorSwitch('win', playerSelection);
+
+        overarchingLi.textContent = `${names[leftIndex]} beats ${names[rightIndex]} w/ ${capitalizeFirstLetter(leftSelection)}`;
+      } else if (result.includes('Lose')) {
+        enemyScore++;
+        rightScore.textContent = enemyScore;
+
+        playerLi.style.color = '#dc143c';
+        cardsColorSwitch('loss', playerSelection);
+
+        overarchingLi.textContent = `${names[rightIndex]} beats ${names[leftIndex]} w/ ${capitalizeFirstLetter(rightSelection)}`;
+      } else {
+        playerLi.style.color = '#3e3e3e';
+        cardsColorSwitch('tie', playerSelection);
+      }
+
+      playerRoundHistory.prepend(playerLi);
+      
+      if (overarchingLi.textContent.length > 0) overarchingHistory.prepend(overarchingLi);
+    }
   }
 
+  if (leftScore === 2) {
+    wins[leftIndex]++;
+
+    advancingParticipants.push(leftIndex);
+
+    overarchingLi.textContent = `${names[leftIndex]} eliminates ${names[rightIndex]} w/ ${capitalizeFirstLetter(leftSelection)}`;
+
+    waitForNextRound(roundNum);
+  } else {
+    wins[rightIndex]++;
+
+    advancingParticipants.push(rightIndex);
+
+    overarchingLi.textContent = `${names[rightIndex]} eliminates ${names[leftIndex]} w/ ${capitalizeFirstLetter(rightSelection)}`;
+
+    waitForNextRound(roundNum);
+  }
+
+  overarchingLi.style.color = 'orange';
+  overarchingHistory.prepend(overarchingLi);
+}
+
+async function startOtherRounds(roundNum, leftIndex, rightIndex) {
   let leftSelection = '';
   let rightSelection = '';
   
@@ -1876,40 +2016,70 @@ async function startOtherRounds(roundNum, leftIndex, rightIndex) {
     overarchingLi.textContent = `${names[rightIndex]} eliminates ${names[leftIndex]} w/ ${capitalizeFirstLetter(rightSelection)}`;
   }
 
+  //if (playerIsEliminated) waitForNextRound(roundNum);
+
   overarchingLi.style.color = 'orange';
   overarchingHistory.prepend(overarchingLi);
 }
 
-async function waitForNextRound(roundNum) {
-  const playerRock = document.getElementById('player-rock');
-  const playerPaper = document.getElementById('player-paper');
-  const playerScissors = document.getElementById('player-scissors');
+function displayChampion(championIndex) {
+  document.querySelector('.round-div').classList.add('removed');
 
-  const enemyRock = document.getElementById('enemy-rock');
-  const enemyPaper = document.getElementById('enemy-paper');
-  const enemyScissors = document.getElementById('enemy-scissors');
+  const championDiv = document.querySelector('.champion-div');
 
-  playerRock.classList = 'control-card';
-  playerPaper.classList = 'control-card';
-  playerScissors.classList = 'control-card';
+  const championDetails = championDiv.querySelector('.champion-details');
 
-  enemyRock.classList = 'control-card enemy-card';
-  enemyPaper.classList = 'control-card enemy-card';
-  enemyScissors.classList = 'control-card enemy-card';
-
-  removeControlCardListeners();
-
-  while (advancingParticipants.length < names.length/(2 ** roundNum)) {
-    document.getElementById('left-div-title').textContent = `Waiting for Other Players... (${advancingParticipants.length}/${names.length/(2 ** roundNum)})`;
-    //console.log(advancingParticipants);
-    await wait(300);
-  }
-
-  console.log(advancingParticipants);
-
-  nonParticipants = [...advancingParticipants];
+  championDetails.querySelectorAll('p')[0].innerHTML = '<b>Champions:</b> ' + champions[championIndex];
+  championDetails.querySelectorAll('p')[1].innerHTML = '<b>Wins:</b> ' + wins[championIndex];
   
-  startRound(++roundNum);
+  const championCard = championDiv.querySelector('.champion-card');
+
+  championCard.querySelector('img').src = images[championIndex];
+
+  const textContainer = championCard.querySelector('.text-container');
+
+  textContainer.querySelector('b').textContent = names[championIndex];
+  textContainer.querySelector('p').textContent = epithets[championIndex];
+
+  championDiv.classList.remove('removed');
+}
+
+async function waitForNextRound(roundNum) {
+  if (roundNum === 6) {
+    if (!playerIsEliminated) document.getElementById('left-div-title').textContent = 'Congratulations! You are the Champion!';
+    else document.getElementById('left-div-title').textContent = `${names[advancingParticipants[0]]} is the Champion!`;
+
+    champions[advancingParticipants[0]]++;
+
+    displayChampion(advancingParticipants[0]);
+  } else {
+    const playerRock = document.getElementById('player-rock');
+    const playerPaper = document.getElementById('player-paper');
+    const playerScissors = document.getElementById('player-scissors');
+    
+    const enemyRock = document.getElementById('enemy-rock');
+    const enemyPaper = document.getElementById('enemy-paper');
+    const enemyScissors = document.getElementById('enemy-scissors');
+    
+    playerRock.classList = 'control-card';
+    playerPaper.classList = 'control-card';
+    playerScissors.classList = 'control-card';
+    
+    enemyRock.classList = 'control-card enemy-card';
+    enemyPaper.classList = 'control-card enemy-card';
+    enemyScissors.classList = 'control-card enemy-card';
+    
+    removeControlCardListeners();
+    
+    while (advancingParticipants.length < names.length/(2 ** roundNum)) {
+      document.getElementById('left-div-title').textContent = `Waiting for Other Players... (${advancingParticipants.length}/${names.length/(2 ** roundNum)})`;
+      await wait(300);
+    }
+  
+    nonParticipants = [...advancingParticipants];
+    
+    startRound(++roundNum);
+  }
 }
 
 },{"epithet":1,"gamer-namer":3}]},{},[4]);
