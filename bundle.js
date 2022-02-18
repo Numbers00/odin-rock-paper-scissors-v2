@@ -1665,7 +1665,8 @@ async function startPlayerRound(roundNum, enemyIndex) {
   setupPlayer();
   setupRight(enemyIndex);
 
-  document.getElementById('left-div-title').textContent = `Round ${roundNum}`;
+  if (roundNum < 6) document.getElementById('left-div-title').textContent = `Round ${roundNum}`;
+  else document.getElementById('left-div-title').textContent = 'Final Round';
 
   const playerRock = document.getElementById('player-rock');
   const playerPaper = document.getElementById('player-paper');
@@ -1701,7 +1702,8 @@ async function startPlayerRound(roundNum, enemyIndex) {
     let result = '';
 
     do {
-      document.getElementById('left-div-title').textContent = `Round ${roundNum}\r\nTimer: ${selectTimer}`;
+      if (roundNum < 6) document.getElementById('left-div-title').innerHTML = `Round ${roundNum}<br>Timer: ${selectTimer}`;
+      else document.getElementById('left-div-title').innerHTML = `Final Round<br>Timer: ${selectTimer}`;
 
       selectTimer--;
       enemySelectDelay--;
